@@ -1,10 +1,19 @@
-import React from 'react';
-import StudentSignUp from './components/StudentSignUp';
+import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import UserLogin from './pages/UserLogin';
+import WardenLogin from './pages/WardenLogin';
+
+
+
 function App() {
   return (
-    <div className="App">
-      <StudentSignUp/>
-    </div>
+    <>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/userLogin" element={<UserLogin />} />
+        <Route path="/wardenLogin" element={<WardenLogin />} />
+      </Routes>
+    </BrowserRouter>
+    </>
   );
 }
 

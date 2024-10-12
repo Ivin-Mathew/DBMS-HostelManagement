@@ -1,0 +1,125 @@
+.userNavbar {
+    display: flex;
+    flex-direction: column;
+    background-color: aliceblue;
+    align-items: center;
+    height: 100vh;
+    grid-area: 1/1/2/2;
+}
+
+.heading {
+    text-align: center;
+    font-weight: 900;
+    margin: 10px;
+    font-size: 30px;
+}
+
+.userPic {
+    display: flex;
+    background-color: blue;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: 10px;
+}
+
+.navbar-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 70px;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px;
+}
+
+.maincontainer {
+    display: grid;
+    grid-template-columns: 1fr 6fr;
+    grid-template-rows: 1fr;
+}
+
+.welcome-user {
+    grid-area: 1/2/2/3;
+    display: flex;
+    flex-direction: column; /* Ensures vertical stacking */
+    align-items: center; /* Align items to the left (optional) */
+    gap: 20px; /* Adds space between the h1 and occupancy details */
+    margin-left: 30px;
+    justify-content: center;
+    
+}
+
+
+input {
+    padding: 8px; /* Optional: Add padding inside the input field */
+    border: 1px solid #ccc; /* Optional: Add border around the input */
+    border-radius: 4px; /* Optional: Round the input field corners */
+    box-sizing: border-box;
+    width: 100%; /* Ensure input fields take the full width available */
+}
+
+label {
+    text-align: right;
+    padding-right: 10px;
+}
+
+.form-group {
+    display: contents; /* Allows grid to manage label/input layout */
+}
+
+.occupancy-details {
+    border: 2px solid black;
+    display: grid;
+    grid-template-columns: 150px 1fr; /* Adjusted for two columns only */
+    gap: 10px 20px; /* Gap between rows and columns */
+    align-items: center;
+    width: 100%; /* Adjust to ensure it fits within the parent */
+    max-width: 500px; /* Set a maximum width to prevent overflow */
+    padding: 10px;
+}
+.btn {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    padding: 0.375rem 0.75rem; /* Adjusts vertical and horizontal padding */
+    border: 1px solid transparent; /* Adds a border */
+    border-radius: 0.25rem; /* Rounds the corners */
+}
+
+.btn-primary {
+    color: #fff; /* Text color */
+    background-color: #007bff; /* Primary background color */
+    border-color: #007bff; /* Border color */
+}
+
+.btn-primary:hover {
+    color: #fff; /* Text color on hover */
+    background-color: #0056b3; /* Darker blue on hover */
+    border-color: #0056b3; /* Darker border on hover */
+}
+
+.btn-primary:focus, .btn-primary.focus {
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.5); /* Focus outline */
+}
+
+.btn-primary.disabled, .btn-primary:disabled {
+    background-color: #007bff; /* Same background for disabled */
+    border-color: #007bff; /* Same border for disabled */
+    opacity: 0.65; /* Reduced opacity for disabled state */
+    pointer-events: none; /* Prevents interaction */
+}
+.button-group {
+    display: flex;              /* Use flexbox for layout */
+    gap: 10px;                 /* Space between buttons */
+    margin-top: 20px;          /* Optional: Space above the button group */
+}

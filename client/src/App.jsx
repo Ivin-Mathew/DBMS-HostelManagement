@@ -3,8 +3,6 @@ import UserLogin from './pages/UserLogin';
 import WardenLogin from './pages/WardenLogin';
 import UserHome from './pages/UserHome';
 
-
-
 function App() {
   return (
     <>

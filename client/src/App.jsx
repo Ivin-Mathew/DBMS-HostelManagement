@@ -1,16 +1,20 @@
+import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import UserLogin from './pages/UserLogin';
+import WardenLogin from './pages/WardenLogin';
+import UserHome from './pages/UserHome';
 
-import React from 'react';
-import UserHome from "./components/UserHome"
-import HostelDetails from "./components/HostelDetails"
 function App() {
- 
-
   return (
     <>
-    {/*  <UserHome/> */}
-    <HostelDetails/>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/userHome" element={<UserHome />} />
+        <Route path="/" element={<UserLogin />} />
+        <Route path="/wardenLogin" element={<WardenLogin />} />
+      </Routes>
+    </BrowserRouter>
     </>
   );
 }
 
-export default App
+export default App;

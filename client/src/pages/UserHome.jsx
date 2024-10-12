@@ -26,7 +26,13 @@ function UserHome() {
 
   useEffect(() => {
     const fetchUserDetails = async () => {
-      const user = supabase.auth.user();
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError) {
+        console.error('Error fetching user:', userError);
+        navigate("/");
+        return;
+      }
+
       if (user) {
         const { data, error } = await supabase
           .from('users')
@@ -48,8 +54,7 @@ function UserHome() {
             profession: data.profession
           }));
         }
-      }
-      else{
+      } else {
         navigate("/");
       }
     };
@@ -58,7 +63,7 @@ function UserHome() {
   }, []);
 
   const saveData = async () => {
-    const user = supabase.auth.user();
+    const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       const { error } = await supabase
         .from('users')
@@ -94,6 +99,15 @@ function UserHome() {
     }));
   };
 
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Error logging out:', error);
+    } else {
+      navigate("/");
+    }
+  };
+
   return (
     <>
       <div className="grid grid-cols-4 grid-rows-1">
@@ -114,12 +128,18 @@ function UserHome() {
               <h1>Payment</h1>
             </div>
           </div>
+          <button
+            className='mt-auto mb-4 inline-block font-medium text-center text-white bg-red-500 border border-transparent rounded py-1 px-2 hover:bg-red-700'
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
         </div>
 
         <div className='flex flex-col items-center gap-5 ml-8 justify-center col-span-3'>
           <h1 className='text-center font-black my-2 text-2xl'>Welcome User!</h1>
 
-          <div className="border-2 border-black grid grid-cols-2 gap-x-5 gap-y-2 items-center w-full max-w-lg p-2">
+          <div className="border-2 border-black grid grid-cols-4 gap-x-5 gap-y-2 items-center w-[85%] p-2 rounded-lg shadow-lg bg-white">
             <div className="contents">
               <label htmlFor="hostelName" className="text-right pr-2">Hostel Name</label>
               <input
@@ -194,7 +214,7 @@ function UserHome() {
             </div>
           </div>
 
-          <div className="border-2 border-black grid grid-cols-2 gap-x-5 gap-y-2 items-center w-full max-w-lg p-2">
+          <div className="border-2 border-black grid grid-cols-4 gap-x-5 gap-y-2 items-center w-[85%] p-2 mt-10 rounded-lg shadow-lg bg-white">
             <div className="contents">
               <label htmlFor="name" className="text-right pr-2">Name</label>
               <input
@@ -286,10 +306,10 @@ function UserHome() {
                 className="p-2 border border-gray-300 rounded w-full"
               />
             </div>
-          </div>
-          <div className="flex gap-2 mt-5">
-            <button className='inline-block font-medium text-center text-white bg-blue-500 border border-transparent rounded py-1 px-2 hover:bg-blue-700' onClick={saveData}>Save</button>
-            <button className='inline-block font-medium text-center text-white bg-blue-500 border border-transparent rounded py-1 px-2 hover:bg-blue-700' onClick={toggleEdit}>{isEditable ? 'Disable Edit' : 'Edit'}</button>
+            <div className="col-span-2 flex justify-end gap-2 mt-2">
+              <button className='inline-block font-medium text-center text-white bg-blue-500 border border-transparent rounded py-1 px-2 hover:bg-blue-700' onClick={saveData}>Save</button>
+              <button className='inline-block font-medium text-center text-white bg-blue-500 border border-transparent rounded py-1 px-2 hover:bg-blue-700' onClick={toggleEdit}>{isEditable ? 'Disable Edit' : 'Edit'}</button>
+            </div>
           </div>
         </div>
       </div>

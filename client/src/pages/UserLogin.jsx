@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { supabase } from '../Supabase';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const UserLogin = () => {
-
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -12,6 +11,7 @@ const UserLogin = () => {
     contact: '',
     address: '',
     gender: '',
+    profession: '',
     password: '',
   });
 
@@ -27,42 +27,63 @@ const UserLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, email, contact, address, gender, password } = formData;
+    const { name, email, contact, address, gender, profession, password } = formData;
 
     if (isLogin) {
       // Handle login logic here
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
         console.error('Error logging in:', error);
+        alert('Error logging in: Incorrect credentials or other error.');
       } else {
         console.log('Logged in successfully');
+        alert('Logged in successfully!');
         navigate("/userHome");
       }
     } else {
       // Sign up user with Supabase
-      const { user, error } = await supabase.auth.signUp({email,password,});
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name,
+            contact,
+            address,
+            gender,
+            profession,
+          },
+        },
+      });
 
       if (error) {
         console.error('Error signing up:', error);
+        alert('Error signing up: ' + error.message);
         return;
-      }
-      else{
-        // Store warden data in 'wardens' table
-        const { data, error: insertError } = await supabase
-          .from('users')
-          .insert([{ id: user.id, name, email, contact, address, gender }]);
+      } else {
+        const user = data.user;
+        if (user) {
+          // Store user data in 'users' table
+          const { data: insertData, error: insertError } = await supabase
+            .from('users')
+            .insert([{ id: user.id, name, email, contact, address, gender, profession }]);
 
-        if (insertError) {
-          console.error('Error inserting user data:', insertError);
+          if (insertError) {
+            console.error('Error inserting user data:', insertError);
+            alert('Error inserting user data: ' + insertError.message);
+          } else {
+            console.log('User data inserted:', insertData);
+            alert('User created successfully!');
+            navigate("/userHome");
+          }
         } else {
-          console.log('User data inserted:', data);
-          navigate("/userHome");
+          alert('User registration successful, but no user data returned.');
         }
-      }    
+      }
     }
   };
 
-  const toggleLoginLogin = () => {
+  const toggleLoginSignUp = () => {
     setIsLogin(!isLogin);
   };
 
@@ -78,6 +99,7 @@ const UserLogin = () => {
         <form onSubmit={handleSubmit}>
           {!isLogin && (
             <>
+              {/* Name Field */}
               <div className="mb-4">
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
                 <input
@@ -91,6 +113,7 @@ const UserLogin = () => {
                 />
               </div>
 
+              {/* Contact Number Field */}
               <div className="mb-4">
                 <label htmlFor="contact" className="block text-sm font-medium text-gray-700">Contact Number</label>
                 <input
@@ -104,6 +127,7 @@ const UserLogin = () => {
                 />
               </div>
 
+              {/* Address Field */}
               <div className="mb-4">
                 <label htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label>
                 <textarea
@@ -117,6 +141,7 @@ const UserLogin = () => {
                 ></textarea>
               </div>
 
+              {/* Gender Field */}
               <div className="mb-4">
                 <label htmlFor="gender" className="block text-sm font-medium text-gray-700">Gender</label>
                 <select
@@ -133,9 +158,24 @@ const UserLogin = () => {
                   <option value="other">Other</option>
                 </select>
               </div>
+
+              {/* Profession Field */}
+              <div className="mb-4">
+                <label htmlFor="profession" className="block text-sm font-medium text-gray-700">Profession</label>
+                <input
+                  type="text"
+                  id="profession"
+                  name="profession"
+                  required
+                  value={formData.profession}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
             </>
           )}
 
+          {/* Email Address Field */}
           <div className="mb-4">
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
             <input
@@ -149,6 +189,7 @@ const UserLogin = () => {
             />
           </div>
 
+          {/* Password Field */}
           <div className="mb-4">
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">{isLogin ? 'Password' : 'Create Password'}</label>
             <input
@@ -162,6 +203,7 @@ const UserLogin = () => {
             />
           </div>
 
+          {/* Submit Button */}
           <button
             type="submit"
             className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
@@ -169,11 +211,12 @@ const UserLogin = () => {
             {isLogin ? 'Log In' : 'Sign Up'}
           </button>
 
+          {/* Toggle Login/Sign-Up */}
           <p className="mt-4 text-center text-gray-600">
             {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
             <button
               type="button"
-              onClick={toggleLoginLogin}
+              onClick={toggleLoginSignUp}
               className="text-blue-500"
             >
               {isLogin ? 'Sign Up' : 'Log in'}

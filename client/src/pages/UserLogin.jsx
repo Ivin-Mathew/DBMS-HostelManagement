@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import { supabase } from '../Supabase';
+import {useNavigate} from 'react-router-dom';
 
 const UserLogin = () => {
+
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -27,34 +31,34 @@ const UserLogin = () => {
 
     if (isLogin) {
       // Handle login logic here
-      const { error } = await supabase.auth.signIn({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
         console.error('Error logging in:', error);
       } else {
         console.log('Logged in successfully');
+        navigate("/userHome");
       }
     } else {
       // Sign up user with Supabase
-      const { user, error } = await supabase.auth.Login({
-        email,
-        password,
-      });
+      const { user, error } = await supabase.auth.signUp({email,password,});
 
       if (error) {
         console.error('Error signing up:', error);
         return;
       }
+      else{
+        // Store warden data in 'wardens' table
+        const { data, error: insertError } = await supabase
+          .from('users')
+          .insert([{ id: user.id, name, email, contact, address, gender }]);
 
-      // Store warden data in 'wardens' table
-      const { data, error: insertError } = await supabase
-        .from('users')
-        .insert([{ id: user.id, name, email, contact, address, gender }]);
-
-      if (insertError) {
-        console.error('Error inserting warden data:', insertError);
-      } else {
-        console.log('Warden data inserted:', data);
-      }
+        if (insertError) {
+          console.error('Error inserting user data:', insertError);
+        } else {
+          console.log('User data inserted:', data);
+          navigate("/userHome");
+        }
+      }    
     }
   };
 

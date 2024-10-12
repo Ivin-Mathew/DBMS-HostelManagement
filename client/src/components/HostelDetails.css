@@ -1,0 +1,176 @@
+.maincontainer {
+  display: grid;
+  grid-template-columns: 1fr 6fr; /* Left navbar and right content area */
+  grid-template-rows: 1fr;
+}
+
+.navbar {
+  display: flex;
+  flex-direction: column;
+  background-color: aqua;
+  align-items: center;
+  height: 100%; /* Full height of the grid row */
+  position: fixed; /* Fix the navbar */
+  top: 0; /* Position at the top */
+  left: 0; /* Align it to the left */
+  width: 200px; /* Set a fixed width for the navbar */
+  z-index: 1000; /* Ensure it stays above other content */
+}
+
+.heading {
+  text-align: center;
+  font-weight: 900;
+  margin: 10px;
+  font-size: 30px;
+}
+
+.nav-Details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 70px; /* Add margin to create space below the heading */
+  gap: 20px;
+}
+
+.right-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center items horizontally */
+  padding: 20px; /* Add padding for spacing */
+  margin-left: 350px; /* Add left margin to avoid overlap with the fixed navbar */
+}
+
+.hostel-Pic {
+  display: flex;
+  flex-direction: column; /* Stack image and text vertically */
+  align-items: center; /* Center image and text horizontally */
+  width: 300px;
+}
+
+.hostel-image {
+  display: block;
+  width: 100%; /* Set the width of the image */
+  height: auto; /* Maintain aspect ratio */
+  object-fit: cover; /* Ensures the image covers the entire space */
+  border-radius: 10px; /* Optional: adds rounded corners to the image */
+}
+
+.hostel-name {
+  margin-top: 10px; /* Adds spacing between the image and the text */
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.description {
+  margin: 50px; /* Adds space above the description */
+  text-align: left; /* Align text to the left */
+  width: 100%; /* Ensure full width */
+}
+
+.h-description {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+p {
+  text-align: left;
+}
+
+.container {
+  display: flex;
+  justify-content: space-around; /* Space between the divs */
+  width: 100%; /* Ensure full width */
+  margin: 20px 0; /* Add vertical margin */
+}
+
+.div-container {
+  width: 150px; /* Adjust width as needed */
+  height: 100px; /* Total height for each div */
+  border: 1px solid #ccc; /* Optional: border for visibility */
+  margin: 25px;
+}
+
+.upper {
+  background-color: green; /* Upper section color */
+  height: 50%; /* Half of the div height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white; /* Text color */
+}
+
+.lower {
+  background-color: blue; /* Lower section color */
+  height: 50%; /* Half of the div height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white; /* Text color */
+}
+
+.c-heading {
+  font-size: 18px;
+  font-weight: bold;
+ 
+}
+
+.carousel-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px; /* Adjust width as needed */
+  margin: auto;
+  overflow: hidden; /* Hide overflow for smooth transitions */
+}
+
+.carousel-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.5s ease-in-out; /* Smooth transition effect */
+}
+
+.carousel-image {
+  width: 100%;
+  height: auto;
+}
+
+.carousel-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(255, 255, 255, 0.7);
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.prev {
+  left: 10px;
+}
+
+.next {
+  right: 10px;
+}
+
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.indicator {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background-color: lightgray;
+  border: none;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.indicator.active {
+  background-color: gray; /* Active indicator color */
+}

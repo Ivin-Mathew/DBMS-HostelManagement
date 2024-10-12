@@ -1,12 +1,14 @@
 
 import React from 'react';
 import UserHome from "./components/UserHome"
+import HostelDetails from "./components/HostelDetails"
 function App() {
  
 
   return (
     <>
-     <UserHome/>
+    {/*  <UserHome/> */}
+    <HostelDetails/>
     </>
   );
 }

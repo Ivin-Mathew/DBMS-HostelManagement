@@ -12,6 +12,7 @@ const UserLogin = () => {
     address: '',
     gender: '',
     profession: '',
+    age:'',
     password: '',
   });
 
@@ -27,7 +28,7 @@ const UserLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, email, contact, address, gender, profession, password } = formData;
+    const { name, email, contact, address, gender, profession,age, password } = formData;
 
     if (isLogin) {
       // Handle login logic here
@@ -52,6 +53,7 @@ const UserLogin = () => {
             address,
             gender,
             profession,
+            age,
           },
         },
       });
@@ -66,7 +68,7 @@ const UserLogin = () => {
           // Store user data in 'users' table
           const { data: insertData, error: insertError } = await supabase
             .from('users')
-            .insert([{ id: user.id, name, email, contact, address, gender, profession }]);
+            .insert([{ id: user.id, name, email, contact, address, gender, profession,age }]);
 
           if (insertError) {
             console.error('Error inserting user data:', insertError);
@@ -168,6 +170,20 @@ const UserLogin = () => {
                   name="profession"
                   required
                   value={formData.profession}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
+
+              {/* Age */}
+              <div className="mb-4">
+                <label htmlFor="profession" className="block text-sm font-medium text-gray-700">Age</label>
+                <input
+                  type="text"
+                  id="profession"
+                  name="profession"
+                  required
+                  value={formData.age}
                   onChange={handleChange}
                   className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />

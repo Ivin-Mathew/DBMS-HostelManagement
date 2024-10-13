@@ -1,12 +1,24 @@
 import React from 'react';
-import WardenDashboard from './components/WardenDashboard';
+import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import UserLogin from './pages/UserLogin';
+import WardenLogin from './pages/WardenLogin';
+import UserHome from './pages/UserHome';
+import WardenHome from './pages/WardenHome';
 
 function App() {
   return (
-    <div className="App">
+    <>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/userHome" element={<UserHome />} />
+        <Route path="/" element={<UserLogin />} />
 
-      <WardenDashboard/>
-    </div>
+
+        <Route path="/wardenLogin" element={<WardenLogin />} />
+        <Route path="/wardenHome" element={<WardenHome />} />
+      </Routes>
+    </BrowserRouter>
+    </>
   );
 }
 

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './WardenDashboard.css';
 
 const WardenDashboard = () => {
   const [building, setBuilding] = useState('');

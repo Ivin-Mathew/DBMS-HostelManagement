@@ -6,19 +6,13 @@ import { useNavigate } from 'react-router-dom';
 
 function WardenHome() {
   const [inputs, setInputs] = useState({
-    hostelName: 'Not Found',
-    location: 'Not Found',
-    roomId: 'Not Found',
-    contractUpto: 'Not Found',
-    rent: 'Not Found',
-    rentDueDate: 'Not Found',
-
     name: 'Not Found',
     address: 'Not Found',
     email: 'Not Found',
     contact: 'Not Found',
     age: 'Not Found',
     gender: 'Not Found',
+    id:'',
   });
 
   const [isEditable, setIsEditable] = useState(false);
@@ -52,6 +46,7 @@ function WardenHome() {
             contact: data.contact,
             age: data.age,
             gender: data.gender,
+            id:data.wardenid,
           }));
         }
       } else {
@@ -87,6 +82,7 @@ function WardenHome() {
       }
     }
   };
+  console.log(inputs.id);
 
   const toggleEdit = () => {
     setIsEditable(!isEditable);
@@ -120,7 +116,7 @@ function WardenHome() {
               <FontAwesomeIcon icon={faSearch} />
               <h1>View Inmates</h1>
             </div>
-            <div className="flex items-center gap-2 my-5">
+            <div className="flex items-center gap-2 my-5 hover:cursor-pointer hover:text-white" onClick={()=> navigate(`/hostelDetails/${inputs.id}`)}>
               <FontAwesomeIcon icon={faHotel} />
               <h1>Hostel Details</h1>
             </div>

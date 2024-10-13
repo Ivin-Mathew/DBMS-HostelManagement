@@ -1,58 +1,32 @@
 // HostelManagement.jsx
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../Supabase'; // Ensure correct path
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const HostelManagement = () => {
+  const { wardenID } = useParams();
+
   const navigate = useNavigate();
-  const [wardenID, setWardenID] = useState(null);
   const [hostel, setHostel] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     address: '',
     mess_available: false,
     gender: '',
-    occupantType: '',
+    occupanttype: '',
     max_occupants: 1,
     vacancies: 0,
   });
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
-  // Fetch Warden ID based on authenticated user
-  const fetchWardenID = async () => {
-    const user = supabase.auth.user();
-
-    if (!user) {
-      alert('You must be logged in to access this page.');
-      navigate('/login'); // Redirect to login if not authenticated
-      return;
-    }
-
-    // Fetch warden record linked to the current user
-    const { data, error } = await supabase
-      .from('wardens')
-      .select('id')
-      .eq('id', user.id)
-      .single();
-
-    if (error) {
-      console.error('Error fetching warden ID:', error);
-      alert('You are not registered as a warden.');
-      navigate('/'); // Redirect to home or appropriate page
-    } else {
-      setWardenID(data.id);
-    }
-  };
-
-  // Fetch hostel associated with the warden
   const fetchHostel = async () => {
     if (!wardenID) return;
 
     const { data, error } = await supabase
       .from('hostels')
       .select('*')
-      .eq('wardenID', wardenID)
+      .eq('wardenid', wardenID)
       .single();
 
     if (error && error.code !== 'PGRST116') { // PGRST116: No rows found
@@ -65,7 +39,7 @@ const HostelManagement = () => {
         address: data.address,
         mess_available: data.mess_available,
         gender: data.gender,
-        occupantType: data.occupantType,
+        occupanttype: data.occupanttype,
         max_occupants: data.max_occupants,
         vacancies: data.vacancies,
       });
@@ -73,14 +47,6 @@ const HostelManagement = () => {
     }
     setLoading(false);
   };
-
-  useEffect(() => {
-    const initialize = async () => {
-      await fetchWardenID();
-    };
-    initialize();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     if (wardenID) {
@@ -101,8 +67,8 @@ const HostelManagement = () => {
     e.preventDefault();
 
     // Validate required fields
-    const { name, address, gender, occupantType, max_occupants } = formData;
-    if (!name || !address || !gender || !occupantType || !max_occupants) {
+    const { name, address, gender, occupanttype, max_occupants } = formData;
+    if (!name || !address || !gender || !occupanttype || !max_occupants) {
       alert('Please fill in all required fields.');
       return;
     }
@@ -116,15 +82,15 @@ const HostelManagement = () => {
           address: formData.address,
           mess_available: formData.mess_available,
           gender: formData.gender,
-          occupantType: formData.occupantType,
+          occupanttype: formData.occupanttype,
           max_occupants: formData.max_occupants,
           vacancies: formData.vacancies,
         })
-        .eq('hostelID', hostel.hostelID);
+        .eq('wardenid', wardenID);
 
       if (error) {
         console.error('Error updating hostel:', error);
-        alert('Failed to update hostel.');
+        alert('Failed to update hostel: ' + error.message);
       } else {
         console.log('Hostel updated:', data);
         alert('Hostel updated successfully!');
@@ -140,16 +106,16 @@ const HostelManagement = () => {
             address: formData.address,
             mess_available: formData.mess_available,
             gender: formData.gender,
-            occupantType: formData.occupantType,
+            occupanttype: formData.occupanttype,
             max_occupants: formData.max_occupants,
             vacancies: formData.vacancies,
-            wardenID: wardenID,
+            wardenid: wardenID,
           },
         ]);
 
       if (error) {
         console.error('Error creating hostel:', error);
-        alert('Failed to create hostel.');
+        alert('Failed to create hostel: ' + error.message);
       } else {
         console.log('Hostel created:', data);
         alert('Hostel created successfully!');
@@ -232,19 +198,18 @@ const HostelManagement = () => {
               <option value="">Select Gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
-              <option value="Co-ed">Co-ed</option>
             </select>
           </div>
 
           {/* Occupant Type */}
           <div className="mb-4">
-            <label htmlFor="occupantType" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="occupanttype" className="block text-sm font-medium text-gray-700">
               Occupant Type
             </label>
             <select
-              id="occupantType"
-              name="occupantType"
-              value={formData.occupantType}
+              id="occupanttype"
+              name="occupanttype"
+              value={formData.occupanttype}
               onChange={handleChange}
               required
               className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
@@ -252,7 +217,6 @@ const HostelManagement = () => {
               <option value="">Select Occupant Type</option>
               <option value="Student">Student</option>
               <option value="Staff">Staff</option>
-              <option value="Mixed">Mixed</option>
             </select>
           </div>
 

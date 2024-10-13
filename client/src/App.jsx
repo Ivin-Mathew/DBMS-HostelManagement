@@ -1,9 +1,10 @@
 import React from 'react';
-import StudentSignUp from './components/StudentSignUp';
+import HostelSearch from './components/HostelSearch';
+
 function App() {
   return (
     <div className="App">
-      <StudentSignUp/>
+      <HostelSearch/>
     </div>
   );
 }

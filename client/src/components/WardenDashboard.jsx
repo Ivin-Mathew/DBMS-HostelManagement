@@ -31,7 +31,11 @@ const WardenDashboard = () => {
   return (
     <div className="flex h-screen">
       {/* Left Sidebar */}
-      <aside className="w-1/2 bg-blue-900 p-5 text-white">
+      <aside className="w-1/5 bg-blue-900 p-5 text-white">
+        <div className="flex items-center mb-6">
+          <img src="/logo.png" alt="Warden Dashboard Logo" className="h-36 w-36 mr-10" />
+        </div>
+
         <h1 className="text-2xl mb-6">Warden Dashboard</h1>
         <nav>
           <ul>
@@ -49,7 +53,7 @@ const WardenDashboard = () => {
       </aside>
 
       {/* Right Content Area */}
-      <main className="w-1/2 flex flex-col">
+      <main className="w-4/5 flex flex-col">
         {/* Room Details Section */}
         <div className="flex-grow bg-gray-100 p-5">
           <h2 className="text-lg font-semibold mb-4">Room Details</h2>

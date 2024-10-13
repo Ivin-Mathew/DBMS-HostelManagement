@@ -1,5 +1,6 @@
+// WardenLogin.jsx
 import { useState } from 'react';
-import { supabase } from '../Supabase';
+import { supabase } from '../Supabase'; // Ensure correct path
 import { useNavigate } from 'react-router-dom';
 
 const WardenLogin = () => {
@@ -12,85 +13,96 @@ const WardenLogin = () => {
     address: '',
     gender: '',
     profession: '',
-    age:'',
+    age: '',
     password: '',
   });
 
   const [isLogin, setIsLogin] = useState(true);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: type === 'checkbox' ? checked : value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, email, contact, address, gender, profession,age, password } = formData;
+    const { name, email, contact, address, gender, profession, age, password } = formData;
 
     if (isLogin) {
-      // Handle login logic here
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
-        console.error('Error logging in:', error);
-        alert('Error logging in: Incorrect credentials or other error.');
-      } else {
-        console.log('Logged in successfully');
-        alert('Logged in successfully!');
-        navigate("/wardenHome");
-      }
-    } else {
-      // Sign up user with Supabase
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            name,
-            contact,
-            address,
-            gender,
-            profession,
-            age,
-          },
-        },
-      });
-
-      if (error) {
-        console.error('Error signing up:', error);
-        alert('Error signing up: ' + error.message);
-        return;
-      } else {
-        const user = data.user;
-        if (user) {
-          // Store user data in 'users' table
-          const { data: insertData, error: insertError } = await supabase
-            .from('wardens')
-            .insert([{ id: user.id, name, email, contact, address, gender, profession,age }]);
-
-          if (insertError) {
-            console.error('Error inserting user data:', insertError);
-            alert('Error inserting user data: ' + insertError.message);
-          } else {
-            console.log('Warden data inserted:', insertData);
-            alert('Warden created successfully!');
-            navigate("/wardenHome");
-          }
+        // Handle login logic here
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+            console.error('Error logging in:', error);
+            alert('Error logging in: Incorrect credentials or other error.');
         } else {
-          alert('Warden registration successful, but no user data returned.');
+            console.log('Logged in successfully');
+            alert('Logged in successfully!');
+            navigate("/wardenHome");
         }
-      }
+    } else {
+        // Sign up warden with Supabase
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+                data: {
+                    name,
+                    contact,
+                    address,
+                    gender,
+                    profession,
+                    age,
+                },
+            },
+        });
+
+        if (error) {
+            console.error('Error signing up:', error);
+            alert('Error signing up: ' + error.message);
+            return;
+        } else {
+            const user = data.user;
+            if (user) {
+                // Store warden data in 'wardens' table
+                const { data: insertData, error: insertError } = await supabase
+                    .from('wardens')
+                    .insert([{
+                        wardenid: user.id, // Use the user ID for the wardenID
+                        name,
+                        email,
+                        contact,
+                        address,
+                        gender,
+                        profession,
+                        age,
+                    }]);
+
+                if (insertError) {
+                    console.error('Error inserting warden data:', insertError);
+                    alert('Error inserting warden data: ' + insertError.message);
+                    return;
+                } else {
+                    console.log('Warden data inserted:', insertData);
+                    alert('Warden created successfully!');
+                    navigate("/wardenHome");
+                }
+            } else {
+                alert('Warden registration successful, but no user data returned.');
+            }
+        }
     }
-  };
+};
+
 
   const toggleLoginSignUp = () => {
     setIsLogin(!isLogin);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <div className="flex justify-center mb-4">
           <span className="text-blue-500 text-3xl">🏛️</span>
@@ -155,9 +167,9 @@ const WardenLogin = () => {
                   className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 >
                   <option value="">Select Gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
                 </select>
               </div>
 
@@ -175,16 +187,17 @@ const WardenLogin = () => {
                 />
               </div>
 
-              {/* Age */}
+              {/* Age Field */}
               <div className="mb-4">
-                <label htmlFor="profession" className="block text-sm font-medium text-gray-700">Age</label>
+                <label htmlFor="age" className="block text-sm font-medium text-gray-700">Age</label>
                 <input
-                  type="text"
-                  id="profession"
-                  name="profession"
+                  type="number"
+                  id="age"
+                  name="age"
                   required
                   value={formData.age}
                   onChange={handleChange}
+                  min="18"
                   className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
               </div>
@@ -222,7 +235,7 @@ const WardenLogin = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
           >
             {isLogin ? 'Log In' : 'Sign Up'}
           </button>
@@ -233,7 +246,7 @@ const WardenLogin = () => {
             <button
               type="button"
               onClick={toggleLoginSignUp}
-              className="text-blue-500"
+              className="text-blue-500 hover:underline"
             >
               {isLogin ? 'Sign Up' : 'Log in'}
             </button>

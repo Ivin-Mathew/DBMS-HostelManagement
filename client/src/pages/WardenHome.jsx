@@ -116,7 +116,7 @@ function WardenHome() {
               <FontAwesomeIcon icon={faSearch} />
               <h1>View Inmates</h1>
             </div>
-            <div className="flex items-center gap-2 my-5 hover:cursor-pointer hover:text-white" onClick={()=> navigate(`/hostelDetails/${inputs.id}`)}>
+            <div className="flex items-center gap-2 my-5 hover:cursor-pointer hover:text-white" onClick={()=> navigate(`/hostelManagement/${inputs.id}`)}>
               <FontAwesomeIcon icon={faHotel} />
               <h1>Hostel Details</h1>
             </div>

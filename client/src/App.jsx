@@ -4,6 +4,8 @@ import WardenLogin from './pages/WardenLogin';
 import UserHome from './pages/UserHome';
 import WardenHome from './pages/WardenHome';
 import HostelManagement from './pages/HostelManagement';
+import AddRoom from './pages/AddRoom';
+import EditRoom from './pages/EditRoom';
 
 function App() {
   return (
@@ -15,7 +17,9 @@ function App() {
 
         <Route path="/wardenLogin" element={<WardenLogin />} />
         <Route path="/wardenHome" element={<WardenHome />} />
-        <Route path="/hostelDetails/:wardenID" element={<HostelManagement />} />
+        <Route path="/hostelManagement/:wardenID" element={<HostelManagement />} />
+        <Route path="/addRoom/:hostelID" element={<AddRoom />} />
+        <Route path='/editRoom/:roomID' element={<EditRoom />} />
       </Routes>
     </BrowserRouter>
     </>

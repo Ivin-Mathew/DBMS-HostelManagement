@@ -1,25 +1,27 @@
 // HostelManagement.jsx
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../Supabase'; // Ensure correct path
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 
 const HostelManagement = () => {
   const { wardenID } = useParams();
 
   const navigate = useNavigate();
   const [hostel, setHostel] = useState(null);
+  const [rooms, setRooms] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
     address: '',
     mess_available: false,
     gender: '',
     occupanttype: '',
-    max_occupants: 1,
-    vacancies: 0,
+    // max_occupants and vacancies will be calculated automatically
+    id: '',
   });
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
+  // Fetch Hostel Details
   const fetchHostel = async () => {
     if (!wardenID) return;
 
@@ -28,6 +30,8 @@ const HostelManagement = () => {
       .select('*')
       .eq('wardenid', wardenID)
       .single();
+    
+    console.log(data);
 
     if (error && error.code !== 'PGRST116') { // PGRST116: No rows found
       console.error('Error fetching hostel:', error);
@@ -40,12 +44,56 @@ const HostelManagement = () => {
         mess_available: data.mess_available,
         gender: data.gender,
         occupanttype: data.occupanttype,
-        max_occupants: data.max_occupants,
-        vacancies: data.vacancies,
+        id: data.hostelid, // Ensure consistent naming
       });
       setIsEditing(true);
     }
     setLoading(false);
+  };
+
+  // Fetch Rooms for the Hostel
+  const fetchRooms = async () => {
+    if (!hostel) return;
+
+    const { data, error } = await supabase
+      .from('hostelroomdetails')
+      .select('*')
+      .eq('hostelid', hostel.hostelid); // Use hostel.hostelid instead of formData.id
+
+    if (error) {
+      console.error('Error fetching rooms:', error);
+      alert('Error fetching room data.');
+    } else {
+      setRooms(data);
+      // After fetching rooms, update hostel's max_occupants and vacancies
+      updateHostelOccupancy(data);
+    }
+  };
+
+  // Update Hostel's max_occupants and vacancies based on rooms
+  const updateHostelOccupancy = async (roomsData) => {
+    const totalMaxOccupants = roomsData.reduce((acc, room) => acc + room.maxOccupants, 0);
+    const totalVacancies = roomsData.reduce((acc, room) => acc + room.vacancies, 0);
+
+    // Update the hostel's max_occupants and vacancies in the database
+    const { data, error } = await supabase
+      .from('hostels')
+      .update({
+        max_occupants: totalMaxOccupants,
+        vacancies: totalVacancies,
+      })
+      .eq('hostelid', hostel.hostelid); // Use hostel.hostelid
+
+    if (error) {
+      console.error('Error updating hostel occupancy:', error);
+      alert('Failed to update hostel occupancy.');
+    } else {
+      setHostel(prevHostel => ({
+        ...prevHostel,
+        max_occupants: totalMaxOccupants,
+        vacancies: totalVacancies,
+      }));
+    }
   };
 
   useEffect(() => {
@@ -54,6 +102,18 @@ const HostelManagement = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wardenID]);
+
+  useEffect(() => {
+    if (hostel) {
+      fetchRooms();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hostel]);
+
+  // Function to refresh rooms after adding/editing
+  const refreshRooms = () => {
+    fetchRooms();
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -67,14 +127,14 @@ const HostelManagement = () => {
     e.preventDefault();
 
     // Validate required fields
-    const { name, address, gender, occupanttype, max_occupants } = formData;
-    if (!name || !address || !gender || !occupanttype || !max_occupants) {
+    const { name, address, gender, occupanttype } = formData;
+    if (!name || !address || !gender || !occupanttype) {
       alert('Please fill in all required fields.');
       return;
     }
 
     if (isEditing) {
-      // Update existing hostel
+      // Update existing hostel details
       const { data, error } = await supabase
         .from('hostels')
         .update({
@@ -83,8 +143,7 @@ const HostelManagement = () => {
           mess_available: formData.mess_available,
           gender: formData.gender,
           occupanttype: formData.occupanttype,
-          max_occupants: formData.max_occupants,
-          vacancies: formData.vacancies,
+          // max_occupants and vacancies are managed automatically
         })
         .eq('wardenid', wardenID);
 
@@ -97,7 +156,7 @@ const HostelManagement = () => {
         navigate('/wardenHome'); // Redirect to warden dashboard or home
       }
     } else {
-      // Create new hostel
+      // Create a new hostel
       const { data, error } = await supabase
         .from('hostels')
         .insert([
@@ -107,9 +166,8 @@ const HostelManagement = () => {
             mess_available: formData.mess_available,
             gender: formData.gender,
             occupanttype: formData.occupanttype,
-            max_occupants: formData.max_occupants,
-            vacancies: formData.vacancies,
             wardenid: wardenID,
+            // max_occupants and vacancies will be updated when rooms are added
           },
         ]);
 
@@ -129,8 +187,9 @@ const HostelManagement = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
+    <div className="min-h-screen flex flex-col md:flex-row items-start justify-center bg-gray-100 p-4 space-y-4 md:space-y-0 md:space-x-4">
+      {/* Hostel Details Section */}
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full md:w-1/2">
         <h2 className="text-2xl font-bold text-center mb-6">
           {isEditing ? 'Edit Hostel Details' : 'Create New Hostel'}
         </h2>
@@ -198,6 +257,7 @@ const HostelManagement = () => {
               <option value="">Select Gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
+              <option value="Co-ed">Co-ed</option>
             </select>
           </div>
 
@@ -217,41 +277,8 @@ const HostelManagement = () => {
               <option value="">Select Occupant Type</option>
               <option value="Student">Student</option>
               <option value="Staff">Staff</option>
+              <option value="Mixed">Mixed</option>
             </select>
-          </div>
-
-          {/* Max Occupants */}
-          <div className="mb-4">
-            <label htmlFor="max_occupants" className="block text-sm font-medium text-gray-700">
-              Maximum Occupants
-            </label>
-            <input
-              type="number"
-              id="max_occupants"
-              name="max_occupants"
-              value={formData.max_occupants}
-              onChange={handleChange}
-              required
-              min="1"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-
-          {/* Vacancies */}
-          <div className="mb-4">
-            <label htmlFor="vacancies" className="block text-sm font-medium text-gray-700">
-              Vacancies
-            </label>
-            <input
-              type="number"
-              id="vacancies"
-              name="vacancies"
-              value={formData.vacancies}
-              onChange={handleChange}
-              required
-              min="0"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            />
           </div>
 
           {/* Submit Button */}
@@ -264,6 +291,86 @@ const HostelManagement = () => {
             </button>
           </div>
         </form>
+      </div>
+
+      {/* Room Management Section */}
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full md:w-1/2">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">Room Management</h2>
+          {isEditing && hostel && (
+            <Link
+              to={`/addRoom/${hostel.hostelid}`}
+              className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200"
+            >
+              Add Room
+            </Link>
+          )}
+        </div>
+
+        {/* Display Hostel Occupancy */}
+        {isEditing && (
+          <div className="mb-4">
+            <p><strong>Total Maximum Occupants:</strong> {hostel.max_occupants}</p>
+            <p><strong>Total Vacancies:</strong> {hostel.vacancies}</p>
+          </div>
+        )}
+
+        {/* Rooms List */}
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white">
+            <thead>
+              <tr>
+                <th className="py-2 px-4 border-b">Room Type</th>
+                <th className="py-2 px-4 border-b">Max Occupants</th>
+                <th className="py-2 px-4 border-b">Vacancies</th>
+                <th className="py-2 px-4 border-b">Rent/Person</th>
+                <th className="py-2 px-4 border-b">Rent Due Date</th>
+                <th className="py-2 px-4 border-b">Attached Bathroom</th>
+                <th className="py-2 px-4 border-b">Furniture Available</th>
+                <th className="py-2 px-4 border-b">AC Available</th>
+                <th className="py-2 px-4 border-b">Actions</th> {/* Added Actions header */}
+              </tr>
+            </thead>
+            <tbody>
+              {rooms.length === 0 ? (
+                <tr>
+                  <td colSpan="9" className="py-4 text-center text-gray-500">
+                    No rooms added yet.
+                  </td>
+                </tr>
+              ) : (
+                rooms.map(room => (
+                  <tr key={room.roomid}> {/* Changed room.roomID to room.roomid */}
+                    <td className="py-2 px-4 border-b text-center">{room.maxOccupants}-Person Room</td>
+                    <td className="py-2 px-4 border-b text-center">{room.maxOccupants}</td>
+                    <td className="py-2 px-4 border-b text-center">{room.vacancies}</td>
+                    <td className="py-2 px-4 border-b text-center">{room.rentPerPerson}</td>
+                    <td className="py-2 px-4 border-b text-center">
+                      {new Date(room.rentDueDate).toLocaleDateString()}
+                    </td>
+                    <td className="py-2 px-4 border-b text-center">
+                      {room.attachedBathroom ? 'Yes' : 'No'}
+                    </td>
+                    <td className="py-2 px-4 border-b text-center">
+                      {room.furnitureAvailable ? 'Yes' : 'No'}
+                    </td>
+                    <td className="py-2 px-4 border-b text-center">
+                      {room.acAvailable ? 'Yes' : 'No'}
+                    </td>
+                    <td className="py-2 px-4 border-b text-center">
+                      <Link
+                        to={`/editRoom/${room.roomid}`}
+                        className="mr-2 bg-yellow-500 text-white py-1 px-2 rounded-md hover:bg-yellow-600 transition duration-200"
+                      >
+                        Edit
+                      </Link>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

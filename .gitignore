@@ -1,2 +1,3 @@
-supaBaseQueries.txt
-wardenQueries.txt
+*.txt
+
+.gitignore

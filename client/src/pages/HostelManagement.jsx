@@ -1,5 +1,5 @@
 // HostelManagement.jsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../Supabase'; // Ensure correct path
 import { useNavigate, useParams, Link } from 'react-router-dom';
 
@@ -15,7 +15,6 @@ const HostelManagement = () => {
     mess_available: false,
     gender: '',
     occupanttype: '',
-    // max_occupants and vacancies will be calculated automatically
     id: '',
   });
   const [loading, setLoading] = useState(true);
@@ -31,7 +30,7 @@ const HostelManagement = () => {
       .eq('wardenid', wardenID)
       .single();
     
-    console.log(data);
+    console.log("Hostel data:", data);
 
     if (error && error.code !== 'PGRST116') { // PGRST116: No rows found
       console.error('Error fetching hostel:', error);
@@ -44,7 +43,7 @@ const HostelManagement = () => {
         mess_available: data.mess_available,
         gender: data.gender,
         occupanttype: data.occupanttype,
-        id: data.hostelid, // Ensure consistent naming
+        id: data.hostelid,
       });
       setIsEditing(true);
     }
@@ -58,42 +57,17 @@ const HostelManagement = () => {
     const { data, error } = await supabase
       .from('hostelroomdetails')
       .select('*')
-      .eq('hostelid', hostel.hostelid); // Use hostel.hostelid instead of formData.id
+      .eq('hostelid', hostel.hostelid);
+
+    console.log("Rooms data:", data);
 
     if (error) {
       console.error('Error fetching rooms:', error);
       alert('Error fetching room data.');
     } else {
       setRooms(data);
-      // After fetching rooms, update hostel's max_occupants and vacancies
-      updateHostelOccupancy(data);
     }
-  };
-
-  // Update Hostel's max_occupants and vacancies based on rooms
-  const updateHostelOccupancy = async (roomsData) => {
-    const totalMaxOccupants = roomsData.reduce((acc, room) => acc + room.maxOccupants, 0);
-    const totalVacancies = roomsData.reduce((acc, room) => acc + room.vacancies, 0);
-
-    // Update the hostel's max_occupants and vacancies in the database
-    const { data, error } = await supabase
-      .from('hostels')
-      .update({
-        max_occupants: totalMaxOccupants,
-        vacancies: totalVacancies,
-      })
-      .eq('hostelid', hostel.hostelid); // Use hostel.hostelid
-
-    if (error) {
-      console.error('Error updating hostel occupancy:', error);
-      alert('Failed to update hostel occupancy.');
-    } else {
-      setHostel(prevHostel => ({
-        ...prevHostel,
-        max_occupants: totalMaxOccupants,
-        vacancies: totalVacancies,
-      }));
-    }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -143,7 +117,6 @@ const HostelManagement = () => {
           mess_available: formData.mess_available,
           gender: formData.gender,
           occupanttype: formData.occupanttype,
-          // max_occupants and vacancies are managed automatically
         })
         .eq('wardenid', wardenID);
 
@@ -167,7 +140,6 @@ const HostelManagement = () => {
             gender: formData.gender,
             occupanttype: formData.occupanttype,
             wardenid: wardenID,
-            // max_occupants and vacancies will be updated when rooms are added
           },
         ]);
 
@@ -183,7 +155,11 @@ const HostelManagement = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <span className="text-xl">Loading...</span>
+      </div>
+    );
   }
 
   return (
@@ -307,14 +283,6 @@ const HostelManagement = () => {
           )}
         </div>
 
-        {/* Display Hostel Occupancy */}
-        {isEditing && (
-          <div className="mb-4">
-            <p><strong>Total Maximum Occupants:</strong> {hostel.max_occupants}</p>
-            <p><strong>Total Vacancies:</strong> {hostel.vacancies}</p>
-          </div>
-        )}
-
         {/* Rooms List */}
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white">
@@ -328,7 +296,7 @@ const HostelManagement = () => {
                 <th className="py-2 px-4 border-b">Attached Bathroom</th>
                 <th className="py-2 px-4 border-b">Furniture Available</th>
                 <th className="py-2 px-4 border-b">AC Available</th>
-                <th className="py-2 px-4 border-b">Actions</th> {/* Added Actions header */}
+                <th className="py-2 px-4 border-b">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -340,22 +308,22 @@ const HostelManagement = () => {
                 </tr>
               ) : (
                 rooms.map(room => (
-                  <tr key={room.roomid}> {/* Changed room.roomID to room.roomid */}
-                    <td className="py-2 px-4 border-b text-center">{room.maxOccupants}-Person Room</td>
-                    <td className="py-2 px-4 border-b text-center">{room.maxOccupants}</td>
+                  <tr key={room.roomid}>
+                    <td className="py-2 px-4 border-b text-center">{room.roomType}</td>
+                    <td className="py-2 px-4 border-b text-center">{room.maxoccupants}</td>
                     <td className="py-2 px-4 border-b text-center">{room.vacancies}</td>
-                    <td className="py-2 px-4 border-b text-center">{room.rentPerPerson}</td>
+                    <td className="py-2 px-4 border-b text-center">₹{room.rentperperson}</td>
                     <td className="py-2 px-4 border-b text-center">
-                      {new Date(room.rentDueDate).toLocaleDateString()}
+                      {new Date(room.rentduedate).toLocaleDateString()}
                     </td>
                     <td className="py-2 px-4 border-b text-center">
-                      {room.attachedBathroom ? 'Yes' : 'No'}
+                      {room.attachedbathroom ? 'Yes' : 'No'}
                     </td>
                     <td className="py-2 px-4 border-b text-center">
-                      {room.furnitureAvailable ? 'Yes' : 'No'}
+                      {room.furnitureavailable ? 'Yes' : 'No'}
                     </td>
                     <td className="py-2 px-4 border-b text-center">
-                      {room.acAvailable ? 'Yes' : 'No'}
+                      {room.acavailable ? 'Yes' : 'No'}
                     </td>
                     <td className="py-2 px-4 border-b text-center">
                       <Link

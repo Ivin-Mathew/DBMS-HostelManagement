@@ -1,5 +1,5 @@
 // EditRoom.jsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../Supabase'; // Ensure correct path
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -35,12 +35,12 @@ const EditRoom = () => {
     } else if (data) {
       setRoomData(data);
       setFormData({
-        roomType: data.maxOccupants.toString(),
-        rentPerPerson: data.rentPerPerson.toString(),
-        rentDueDate: data.rentDueDate.slice(0, 10), // Format for date input
-        attachedBathroom: data.attachedBathroom,
-        furnitureAvailable: data.furnitureAvailable,
-        acAvailable: data.acAvailable,
+        roomType: data.maxoccupants.toString(),
+        rentPerPerson: data.rentperperson.toString(),
+        rentDueDate: data.rentduedate.slice(0, 10), // Format for date input
+        attachedBathroom: data.attachedbathroom,
+        furnitureAvailable: data.furnitureavailable,
+        acAvailable: data.acavailable,
       });
     }
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const images = [
   { src: "/src/assets/Hostelimage.jpg", alt: "First slide" },

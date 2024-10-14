@@ -12,23 +12,23 @@ const UserLogin = () => {
     address: '',
     gender: '',
     profession: '',
-    age:'',
+    age: '', // Ensure 'age' is included correctly
     password: '',
   });
 
   const [isLogin, setIsLogin] = useState(true);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: type === 'checkbox' ? checked : value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, email, contact, address, gender, profession,age, password } = formData;
+    const { name, email, contact, address, gender, profession, age, password } = formData;
 
     if (isLogin) {
       // Handle login logic here
@@ -53,7 +53,7 @@ const UserLogin = () => {
             address,
             gender,
             profession,
-            age,
+            age, // Ensure 'age' is correctly passed
           },
         },
       });
@@ -68,7 +68,7 @@ const UserLogin = () => {
           // Store user data in 'users' table
           const { data: insertData, error: insertError } = await supabase
             .from('users')
-            .insert([{ id: user.id, name, email, contact, address, gender, profession,age }]);
+            .insert([{ id: user.id, name, email, contact, address, gender, profession, age }]); // Correct 'age' field
 
           if (insertError) {
             console.error('Error inserting user data:', insertError);
@@ -155,9 +155,9 @@ const UserLogin = () => {
                   className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 >
                   <option value="">Select Gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
+                  <option value="Male">Male</option> {/* Capitalized for consistency */}
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
                 </select>
               </div>
 
@@ -175,16 +175,17 @@ const UserLogin = () => {
                 />
               </div>
 
-              {/* Age */}
+              {/* Age Field */}
               <div className="mb-4">
-                <label htmlFor="profession" className="block text-sm font-medium text-gray-700">Age</label>
+                <label htmlFor="age" className="block text-sm font-medium text-gray-700">Age</label>
                 <input
-                  type="text"
-                  id="profession"
-                  name="profession"
+                  type="number" // Changed type to 'number'
+                  id="age" // Changed id to 'age'
+                  name="age" // Changed name to 'age'
                   required
                   value={formData.age}
                   onChange={handleChange}
+                  min="1" // Optional: Set minimum age
                   className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
               </div>
@@ -207,7 +208,9 @@ const UserLogin = () => {
 
           {/* Password Field */}
           <div className="mb-4">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">{isLogin ? 'Password' : 'Create Password'}</label>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              {isLogin ? 'Password' : 'Create Password'}
+            </label>
             <input
               type="password"
               id="password"

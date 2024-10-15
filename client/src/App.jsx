@@ -8,6 +8,7 @@ import AddRoom from './pages/AddRoom';
 import EditRoom from './pages/EditRoom';
 import HostelSearch from './pages/HostelSearch';
 import HostelDetails from './pages/HostelDetails';
+import ViewInmates from './pages/ViewInmates';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/hostelManagement/:wardenID" element={<HostelManagement />} />
         <Route path="/addRoom/:hostelID" element={<AddRoom />} />
         <Route path='/editRoom/:roomID' element={<EditRoom />} />
+        <Route path='/viewInmates' element={<ViewInmates />} />
       </Routes>
     </BrowserRouter>
     </>

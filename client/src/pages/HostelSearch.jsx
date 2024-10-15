@@ -19,9 +19,9 @@ const HostelSearch = () => {
       const { data, error } = await supabase
         .from('hostels')
         .select('*');
-    
+      
       console.log('Supabase Response:', { data, error }); // Add this line for debugging
-    
+
       if (error) {
         console.error('Error fetching hostels:', error);
         alert('Failed to fetch hostels.');
@@ -31,7 +31,6 @@ const HostelSearch = () => {
         setFilteredHostels(data);
       }
     };
-    
 
     fetchHostels();
   }, []);
@@ -142,6 +141,17 @@ const HostelSearch = () => {
                     className="form-checkbox"
                   />
                   <span className="ml-2">Female</span>
+                </label>
+              </li>
+              <li>
+                <label className="inline-flex items-center">
+                  <input
+                    type="checkbox"
+                    value="Co-ed"
+                    onChange={handleGenderChange}
+                    className="form-checkbox"
+                  />
+                  <span className="ml-2">Co-ed</span>
                 </label>
               </li>
             </ul>

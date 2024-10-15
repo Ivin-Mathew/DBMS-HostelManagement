@@ -7,6 +7,7 @@ import HostelManagement from './pages/HostelManagement';
 import AddRoom from './pages/AddRoom';
 import EditRoom from './pages/EditRoom';
 import HostelSearch from './pages/HostelSearch';
+import HostelDetails from './pages/HostelDetails';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<UserLogin />} />
         <Route path="/userHome" element={<UserHome />} />
         <Route path="/search" element={<HostelSearch />} />
+        <Route path="/hostelDetails/:hostelid" element={<HostelDetails />} />
 
         <Route path="/wardenLogin" element={<WardenLogin />} />
         <Route path="/wardenHome" element={<WardenHome />} />

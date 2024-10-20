@@ -1,35 +1,41 @@
 // HostelSearch.jsx
-import { useState, useEffect } from 'react';
-import { supabase } from '../Supabase'; // Ensure correct path
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { supabase } from "../Supabase"; // Ensure correct path
+import { Link } from "react-router-dom";
+import { faHotel, faBars, faClose } from "@fortawesome/free-solid-svg-icons";
+import ActivityIndicator from "../components/ActivityIndicator";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { gsap } from "gsap";
+import { useNavigate } from "react-router-dom";
 
 const HostelSearch = () => {
+  const navigate = useNavigate();
   const [hostels, setHostels] = useState([]); // All hostels fetched from the database
   const [filteredHostels, setFilteredHostels] = useState([]); // Hostels after applying search and filters
-  const [searchTerm, setSearchTerm] = useState(''); // Search input
+  const [searchTerm, setSearchTerm] = useState(""); // Search input
   const [sortOrder, setSortOrder] = useState(null); // Sort order: 'asc' or 'desc'
-
+  const [loading, isLoading] = useState(false);
   // New state variables for filters
   const [selectedGenders, setSelectedGenders] = useState([]); // Gender filters
-  const [messAvailable, setMessAvailable] = useState('All'); // Mess availability filter
-
+  const [messAvailable, setMessAvailable] = useState("All"); // Mess availability filter
+  const [isOpen, setIsOpen] = useState(false);
   // Fetch all hostels from Supabase on component mount
   useEffect(() => {
     const fetchHostels = async () => {
-      const { data, error } = await supabase
-        .from('hostels')
-        .select('*');
-      
-      console.log('Supabase Response:', { data, error }); // Add this line for debugging
+      isLoading(true);
+      const { data, error } = await supabase.from("hostels").select("*");
+
+      console.log("Supabase Response:", { data, error }); // Add this line for debugging
 
       if (error) {
-        console.error('Error fetching hostels:', error);
-        alert('Failed to fetch hostels.');
+        console.error("Error fetching hostels:", error);
+        alert("Failed to fetch hostels.");
       } else {
-        console.log('Fetched hostels:', data); // Debugging line
+        console.log("Fetched hostels:", data); // Debugging line
         setHostels(data);
         setFilteredHostels(data);
       }
+      isLoading(false);
     };
 
     fetchHostels();
@@ -40,31 +46,35 @@ const HostelSearch = () => {
     let updatedHostels = [...hostels];
 
     // Apply search filter
-    if (searchTerm.trim() !== '') {
-      updatedHostels = updatedHostels.filter(hostel =>
+    if (searchTerm.trim() !== "") {
+      updatedHostels = updatedHostels.filter((hostel) =>
         hostel.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     // Apply gender filters
     if (selectedGenders.length > 0) {
-      updatedHostels = updatedHostels.filter(hostel =>
+      updatedHostels = updatedHostels.filter((hostel) =>
         selectedGenders.includes(hostel.gender)
       );
     }
 
     // Apply mess availability filter
-    if (messAvailable === 'Yes') {
-      updatedHostels = updatedHostels.filter(hostel => hostel.mess_available === true);
-    } else if (messAvailable === 'No') {
-      updatedHostels = updatedHostels.filter(hostel => hostel.mess_available === false);
+    if (messAvailable === "Yes") {
+      updatedHostels = updatedHostels.filter(
+        (hostel) => hostel.mess_available === true
+      );
+    } else if (messAvailable === "No") {
+      updatedHostels = updatedHostels.filter(
+        (hostel) => hostel.mess_available === false
+      );
     }
     // If 'All', do not filter based on mess availability
 
     // Apply sorting
     if (sortOrder) {
       updatedHostels.sort((a, b) => {
-        if (sortOrder === 'asc') {
+        if (sortOrder === "asc") {
           return a.rentPerPerson - b.rentPerPerson;
         } else {
           return b.rentPerPerson - a.rentPerPerson;
@@ -73,7 +83,7 @@ const HostelSearch = () => {
     }
 
     setFilteredHostels(updatedHostels);
-    console.log('Filtered hostels:', updatedHostels); // Debugging line
+    console.log("Filtered hostels:", updatedHostels); // Debugging line
   }, [hostels, searchTerm, selectedGenders, messAvailable, sortOrder]);
 
   // Handle search input change
@@ -84,10 +94,10 @@ const HostelSearch = () => {
   // Handle sort button click
   const handleSort = () => {
     // Toggle sort order between ascending and descending
-    if (sortOrder === 'asc') {
-      setSortOrder('desc');
+    if (sortOrder === "asc") {
+      setSortOrder("desc");
     } else {
-      setSortOrder('asc');
+      setSortOrder("asc");
     }
   };
 
@@ -97,7 +107,7 @@ const HostelSearch = () => {
     if (checked) {
       setSelectedGenders([...selectedGenders, value]);
     } else {
-      setSelectedGenders(selectedGenders.filter(gender => gender !== value));
+      setSelectedGenders(selectedGenders.filter((gender) => gender !== value));
     }
   };
 
@@ -106,159 +116,226 @@ const HostelSearch = () => {
     setMessAvailable(e.target.value);
   };
 
+  const toggleSidebar = () => {
+    const sidebar = document.querySelector(".sidebar");
+    if (isOpen) {
+      gsap.to(sidebar, { width: "0px", duration: 0 }); // Collapse
+    } else {
+      gsap.to(sidebar, { width: "300px", duration: 0 }); // Expand
+    }
+    setIsOpen(!isOpen);
+  };
+
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
-      <div className="w-1/6 bg-blue-900 p-5 text-white overflow-y-auto">
-        <div className="flex items-center mb-6">
-          <img src="/logo.png" alt="Warden Dashboard Logo" className="h-24 w-24 mr-4" />
-        </div>
-        <h1 className="text-2xl font-bold mb-8">HOME</h1>
-        <div className="mb-4">
-          <h2 className="text-xl font-semibold">Filters</h2>
-          
-          {/* Gender Filter */}
-          <div className="mt-4">
-            <h3 className="text-lg font-medium">Gender</h3>
-            <ul className="mt-2 space-y-2">
-              <li>
-                <label className="inline-flex items-center">
-                  <input
-                    type="checkbox"
-                    value="Male"
-                    onChange={handleGenderChange}
-                    className="form-checkbox"
-                  />
-                  <span className="ml-2">Male</span>
-                </label>
-              </li>
-              <li>
-                <label className="inline-flex items-center">
-                  <input
-                    type="checkbox"
-                    value="Female"
-                    onChange={handleGenderChange}
-                    className="form-checkbox"
-                  />
-                  <span className="ml-2">Female</span>
-                </label>
-              </li>
-              <li>
-                <label className="inline-flex items-center">
-                  <input
-                    type="checkbox"
-                    value="Co-ed"
-                    onChange={handleGenderChange}
-                    className="form-checkbox"
-                  />
-                  <span className="ml-2">Co-ed</span>
-                </label>
-              </li>
-            </ul>
-          </div>
+      <div
+        className="fixed flex flex-col left-0  text-black bg-gray-600 bg-opacity-50 backdrop-filter backdrop-blur-lg items-center h-screen gap-16 top-0 col-span-1 sidebar transition-all duration-300"
+        style={{ width: "0px" }}
+      >
+        {isOpen && (
+          <>
+            <div className="flex items-center mb-6 mt-32">
+              <img
+                src="/logo.png"
+                alt="Warden Dashboard Logo"
+                className="h-24 w-24 mr-4"
+              />
+            </div>
 
-          {/* Mess Availability Filter */}
-          <div className="mt-6">
-            <h3 className="text-lg font-medium">Mess Availability</h3>
-            <ul className="mt-2 space-y-2">
-              <li>
-                <label className="inline-flex items-center">
-                  <input
-                    type="radio"
-                    name="messAvailable"
-                    value="All"
-                    checked={messAvailable === 'All'}
-                    onChange={handleMessAvailableChange}
-                    className="form-radio"
-                  />
-                  <span className="ml-2">All</span>
-                </label>
-              </li>
-              <li>
-                <label className="inline-flex items-center">
-                  <input
-                    type="radio"
-                    name="messAvailable"
-                    value="Yes"
-                    checked={messAvailable === 'Yes'}
-                    onChange={handleMessAvailableChange}
-                    className="form-radio"
-                  />
-                  <span className="ml-2">Mess Available</span>
-                </label>
-              </li>
-              <li>
-                <label className="inline-flex items-center">
-                  <input
-                    type="radio"
-                    name="messAvailable"
-                    value="No"
-                    checked={messAvailable === 'No'}
-                    onChange={handleMessAvailableChange}
-                    className="form-radio"
-                  />
-                  <span className="ml-2">Mess Not Available</span>
-                </label>
-              </li>
-            </ul>
-          </div>
-        </div>
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold">Filters</h2>
+
+              {/* Gender Filter */}
+              <div className="mt-4">
+                <h3 className="text-lg font-medium">Gender</h3>
+                <ul className="mt-2 space-y-2">
+                  <li>
+                    <label className="inline-flex items-center">
+                      <input
+                        type="checkbox"
+                        value="Male"
+                        onChange={handleGenderChange}
+                        className="form-checkbox"
+                      />
+                      <span className="ml-2">Male</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label className="inline-flex items-center">
+                      <input
+                        type="checkbox"
+                        value="Female"
+                        onChange={handleGenderChange}
+                        className="form-checkbox"
+                      />
+                      <span className="ml-2">Female</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label className="inline-flex items-center">
+                      <input
+                        type="checkbox"
+                        value="Co-ed"
+                        onChange={handleGenderChange}
+                        className="form-checkbox"
+                      />
+                      <span className="ml-2">Co-ed</span>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Mess Availability Filter */}
+              <div className="mt-6">
+                <h3 className="text-lg font-medium">Mess Availability</h3>
+                <ul className="mt-2 space-y-2">
+                  <li>
+                    <label className="inline-flex items-center">
+                      <input
+                        type="radio"
+                        name="messAvailable"
+                        value="All"
+                        checked={messAvailable === "All"}
+                        onChange={handleMessAvailableChange}
+                        className="form-radio"
+                      />
+                      <span className="ml-2">All</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label className="inline-flex items-center">
+                      <input
+                        type="radio"
+                        name="messAvailable"
+                        value="Yes"
+                        checked={messAvailable === "Yes"}
+                        onChange={handleMessAvailableChange}
+                        className="form-radio"
+                      />
+                      <span className="ml-2">Mess Available</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label className="inline-flex items-center">
+                      <input
+                        type="radio"
+                        name="messAvailable"
+                        value="No"
+                        checked={messAvailable === "No"}
+                        onChange={handleMessAvailableChange}
+                        className="form-radio"
+                      />
+                      <span className="ml-2">Mess Not Available</span>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+              <div className="mt-6" onClick={() => {
+                navigate('/userHome')
+              }}>
+                <p className="text-lg text-red-600 hover:text-red-950">Back</p>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
+      <button
+        className="fixed top-6 left-6 bg-black p-3 rounded-full w-14 h-14 z-20 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-colors duration-200 flex items-center justify-center"
+        onClick={toggleSidebar}
+      >
+        {isOpen ? (
+          <FontAwesomeIcon
+            icon={faClose}
+            style={{ color: "white" }}
+            size="lg"
+          />
+        ) : (
+          <FontAwesomeIcon icon={faBars} style={{ color: "white" }} size="lg" />
+        )}
+      </button>
+
       {/* Main Content */}
-      <div className="w-5/6 p-4 overflow-y-auto">
+      <div className=" p-4 overflow-y-auto w-full">
         {/* Search and Sort */}
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex  justify-center items-center mb-4 mt-4 gap-4 ">
           <input
             type="text"
             placeholder="Search Hostels by Name"
             value={searchTerm}
             onChange={handleSearchChange}
-            className="w-5/6 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className=" p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 w-[60%]"
           />
           <button
             onClick={handleSort}
             className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            Sort By Price {sortOrder === 'asc' ? '↑' : sortOrder === 'desc' ? '↓' : ''}
+            Sort By Price{" "}
+            {sortOrder === "asc" ? "↑" : sortOrder === "desc" ? "↓" : ""}
           </button>
         </div>
 
         {/* Hostels Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {filteredHostels.length === 0 ? (
-            <p className="text-center text-gray-500 col-span-full">No hostels found matching your criteria.</p>
-          ) : (
-            filteredHostels.map(hostel => (
-              <div key={hostel.hostelid} className="border rounded-lg overflow-hidden shadow-md">
-                {/* Hostel Image */}
-                <img
-                  src={hostel.image_url || 'https://via.placeholder.com/300x200'}
-                  alt={hostel.name}
-                  className="w-full h-48 object-cover"
-                />
-                
-                {/* Hostel Details */}
-                <div className="p-4">
-                  <h3 className="text-xl font-semibold mb-2">{hostel.name}</h3>
-                  <p className="text-gray-600 mb-1"><strong>Rent:</strong> ₹{hostel.rentPerPerson}</p>
-                  <p className="text-gray-600 mb-1"><strong>Location:</strong> {hostel.location}</p>
-                  <p className="text-gray-600 mb-1"><strong>Mess Available:</strong> {hostel.mess_available ? 'Yes' : 'No'}</p>
-                  <p className="text-gray-600 mb-1"><strong>Gender:</strong> {hostel.gender}</p>
-                  <p className="text-gray-600 mb-1"><strong>Occupant Type:</strong> {hostel.occupanttype}</p>
-                  
-                  {/* Link to Hostel Details or Booking */}
-                  <Link
-                    to={`/hostelDetails/${hostel.hostelid}`}
-                    className="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                  >
-                    View Details
-                  </Link>
-                </div>
+        {loading ? (
+          <ActivityIndicator />
+        ) : (
+          <div className="ml-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 mt-20  ">
+            {filteredHostels.length === 0 ? (
+              <div className="flex flex-col gap-3 text-center items-center justify-center text-gray-500 col-span-full mt-80">
+                <FontAwesomeIcon icon={faHotel} size="5x" />
+                <p className="text-2xl">No Hostels</p>
               </div>
-            ))
-          )}
-        </div>
+            ) : (
+              filteredHostels.map((hostel) => (
+                <div
+                  key={hostel.hostelid}
+                  className="border rounded-lg overflow-hidden shadow-md"
+                >
+                  {/* Hostel Image */}
+                  <img
+                    src={
+                      hostel.image_url || "https://via.placeholder.com/300x200"
+                    }
+                    alt={hostel.name}
+                    className="w-full h-48 object-cover"
+                  />
+
+                  {/* Hostel Details */}
+                  <div className="p-4">
+                    <h3 className="text-xl font-semibold mb-2">
+                      {hostel.name}
+                    </h3>
+                    <p className="text-gray-600 mb-1">
+                      <strong>Rent:</strong> ₹{hostel.rentPerPerson}
+                    </p>
+                    <p className="text-gray-600 mb-1">
+                      <strong>Location:</strong> {hostel.location}
+                    </p>
+                    <p className="text-gray-600 mb-1">
+                      <strong>Mess Available:</strong>{" "}
+                      {hostel.mess_available ? "Yes" : "No"}
+                    </p>
+                    <p className="text-gray-600 mb-1">
+                      <strong>Gender:</strong> {hostel.gender}
+                    </p>
+                    <p className="text-gray-600 mb-1">
+                      <strong>Occupant Type:</strong> {hostel.occupanttype}
+                    </p>
+
+                    {/* Link to Hostel Details or Booking */}
+                    <Link
+                      to={`/hostelDetails/${hostel.hostelid}`}
+                      className="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    >
+                      View Details
+                    </Link>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

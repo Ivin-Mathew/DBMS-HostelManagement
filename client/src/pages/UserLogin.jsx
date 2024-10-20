@@ -38,7 +38,7 @@ const UserLogin = () => {
         alert('Error logging in: Incorrect credentials or other error.');
       } else {
         console.log('Logged in successfully');
-        alert('Logged in successfully!');
+        // alert('Logged in successfully!');
         navigate("/userHome");
       }
     } else {

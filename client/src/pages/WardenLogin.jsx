@@ -102,8 +102,8 @@ const WardenLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+    <div className="min-h-screen py-16 flex items-center justify-center bg-surface">
+      <div className="bg-mixed text-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <div className="flex justify-center mb-4">
           <span className="text-blue-500 text-3xl">🏛️</span>
         </div>
@@ -115,7 +115,7 @@ const WardenLogin = () => {
             <>
               {/* Name Field */}
               <div className="mb-4">
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+                <label htmlFor="name" className="block text-sm font-medium ">Name</label>
                 <input
                   type="text"
                   id="name"
@@ -123,13 +123,13 @@ const WardenLogin = () => {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-primary font-[700] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
               </div>
 
               {/* Contact Number Field */}
               <div className="mb-4">
-                <label htmlFor="contact" className="block text-sm font-medium text-gray-700">Contact Number</label>
+                <label htmlFor="contact" className="block text-sm font-medium ">Contact Number</label>
                 <input
                   type="tel"
                   id="contact"
@@ -137,13 +137,13 @@ const WardenLogin = () => {
                   required
                   value={formData.contact}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-primary font-[700] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
               </div>
 
               {/* Address Field */}
               <div className="mb-4">
-                <label htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label>
+                <label htmlFor="address" className="block text-sm font-medium ">Address</label>
                 <textarea
                   id="address"
                   name="address"
@@ -151,20 +151,20 @@ const WardenLogin = () => {
                   required
                   value={formData.address}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-primary font-[700] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 ></textarea>
               </div>
 
               {/* Gender Field */}
               <div className="mb-4">
-                <label htmlFor="gender" className="block text-sm font-medium text-gray-700">Gender</label>
+                <label htmlFor="gender" className="block text-sm font-medium ">Gender</label>
                 <select
                   id="gender"
                   name="gender"
                   required
                   value={formData.gender}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-primary font-[700] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 >
                   <option value="">Select Gender</option>
                   <option value="Male">Male</option>
@@ -175,7 +175,7 @@ const WardenLogin = () => {
 
               {/* Profession Field */}
               <div className="mb-4">
-                <label htmlFor="profession" className="block text-sm font-medium text-gray-700">Profession</label>
+                <label htmlFor="profession" className="block text-sm font-medium ">Profession</label>
                 <input
                   type="text"
                   id="profession"
@@ -183,13 +183,13 @@ const WardenLogin = () => {
                   required
                   value={formData.profession}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-primary font-[700] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
               </div>
 
               {/* Age Field */}
               <div className="mb-4">
-                <label htmlFor="age" className="block text-sm font-medium text-gray-700">Age</label>
+                <label htmlFor="age" className="block text-sm font-medium ">Age</label>
                 <input
                   type="number"
                   id="age"
@@ -198,7 +198,7 @@ const WardenLogin = () => {
                   value={formData.age}
                   onChange={handleChange}
                   min="18"
-                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-primary font-[700] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
               </div>
             </>
@@ -206,7 +206,7 @@ const WardenLogin = () => {
 
           {/* Email Address Field */}
           <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
+            <label htmlFor="email" className="block text-sm font-medium ">Email Address</label>
             <input
               type="email"
               id="email"
@@ -214,13 +214,13 @@ const WardenLogin = () => {
               required
               value={formData.email}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-primary font-[700] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           {/* Password Field */}
           <div className="mb-4">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">{isLogin ? 'Password' : 'Create Password'}</label>
+            <label htmlFor="password" className="block text-sm font-medium ">{isLogin ? 'Password' : 'Create Password'}</label>
             <input
               type="password"
               id="password"
@@ -228,7 +228,7 @@ const WardenLogin = () => {
               required
               value={formData.password}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-primary font-[700] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
@@ -241,7 +241,7 @@ const WardenLogin = () => {
           </button>
 
           {/* Toggle Login/Sign-Up */}
-          <p className="mt-4 text-center text-gray-600">
+          <p className="mt-4 text-center">
             {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
             <button
               type="button"
@@ -251,6 +251,14 @@ const WardenLogin = () => {
               {isLogin ? 'Sign Up' : 'Log in'}
             </button>
           </p>
+          <div className=' flex flex-row items-center justify-center 
+          p-3 mt-4
+          bg-[#413f53] rounded-lg'>
+            Are you a user?
+            <p className='ml-1 text-blue-500 hover:cursor-pointer' onClick={()=> navigate("/")}>
+              Login Here!
+            </p>
+          </div>
         </form>
       </div>
     </div>

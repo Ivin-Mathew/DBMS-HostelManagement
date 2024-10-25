@@ -130,24 +130,19 @@ const HostelSearch = () => {
     <div className="flex flex-row h-[100dvh]">
       {/* Sidebar */}
       <div
-        className="flex flex-col items-center 
-        sticky top-0 left-0  text-black 
-        bg-slate-400 gap-16
-        sidebar
-        transition-all duration-300"
+        className="flex flex-col bg-[#353535] text-white backdrop-filter backdrop-blur-sm items-center h-screen sticky top-0 left-0 col-span-1 sidebar transition-all duration-300"
         style={{ width: "0px" }}
       >
         {isOpen && (
           <>
-            <div className="flex items-center mb-6 mt-32">
+            <div className="mt-36">
+            <div className="flex items-center justify-center mt-4 mb-10" onClick={()=>navigate("/userHome")}>
               <img
                 src="/logo.png"
                 alt="Warden Dashboard Logo"
-                className="h-24 w-24 mr-4"
+                className="h-24 w-24"
               />
             </div>
-
-            <div className="mb-4">
               <h2 className="text-xl font-semibold">Filters</h2>
 
               {/* Gender Filter */}
@@ -246,22 +241,22 @@ const HostelSearch = () => {
       </div>
 
       <button
-        className="fixed top-6 left-6 bg-black p-3 rounded-full w-14 h-14 z-20 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-colors duration-200 flex items-center justify-center"
+        className="fixed top-6 left-6 bg-[#daa510] p-3 rounded-full w-14 h-14 z-20 hover:bg-[#e6b854] focus:outline-none focus:ring-2 focus:ring-gray-300 transition-colors duration-200 flex items-center justify-center"
         onClick={toggleSidebar}
       >
         {isOpen ? (
           <FontAwesomeIcon
             icon={faClose}
-            style={{ color: "white" }}
+            style={{ color: "black" }}
             size="lg"
           />
         ) : (
-          <FontAwesomeIcon icon={faBars} style={{ color: "white" }} size="lg" />
+          <FontAwesomeIcon icon={faBars} style={{ color: "black" }} size="lg" />
         )}
       </button>
 
       {/* Main Content */}
-      <div className=" p-4 overflow-y-auto w-full">
+      <div className=" p-4 w-full bg-surface text-white">
         {/* Search and Sort */}
         <div className="flex  justify-center items-center mb-4 mt-4 gap-4 ">
           <input
@@ -269,7 +264,7 @@ const HostelSearch = () => {
             placeholder="Search Hostels by Name"
             value={searchTerm}
             onChange={handleSearchChange}
-            className=" p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 w-[50%]"
+            className=" p-2 border border-gray-300 rounded text-black focus:outline-none focus:ring-2 focus:ring-blue-500 w-[50%]"
           />
           <button
             onClick={handleSort}
@@ -295,7 +290,7 @@ const HostelSearch = () => {
                 filteredHostels.map((hostel) => (
                   <div
                     key={hostel.hostelid}
-                    className="border rounded-lg overflow-hidden shadow-md"
+                    className="border rounded-lg overflow-hidden shadow-md bg-[#29353c]"
                   >
                     {/* Hostel Image */}
                     <img
@@ -308,23 +303,23 @@ const HostelSearch = () => {
 
                     {/* Hostel Details */}
                     <div className="p-4">
-                      <h3 className="text-xl font-semibold mb-2">
+                      <h3 className="text-3xl text-center font-bold font-serif my-[10px]">
                         {hostel.name}
                       </h3>
-                      <p className="text-gray-600 mb-1">
+                      {/* <p className="mb-1">
                         <strong>Rent:</strong> ₹{hostel.rentPerPerson}
+                      </p> */}
+                      <p className="mb-1">
+                        <strong>Location:</strong> {hostel.address}
                       </p>
-                      <p className="text-gray-600 mb-1">
-                        <strong>Location:</strong> {hostel.location}
-                      </p>
-                      <p className="text-gray-600 mb-1">
+                      <p className="mb-1">
                         <strong>Mess Available:</strong>{" "}
                         {hostel.mess_available ? "Yes" : "No"}
                       </p>
-                      <p className="text-gray-600 mb-1">
+                      <p className="mb-1">
                         <strong>Gender:</strong> {hostel.gender}
                       </p>
-                      <p className="text-gray-600 mb-1">
+                      <p className="mb-1">
                         <strong>Occupant Type:</strong> {hostel.occupanttype}
                       </p>
 

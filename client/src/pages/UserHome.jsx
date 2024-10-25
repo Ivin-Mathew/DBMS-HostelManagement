@@ -201,7 +201,7 @@ function UserHome() {
 
           {/* Sidebar */}
           <div
-            className="fixed flex flex-col left-0 justify-around  bg-gray-600 bg-opacity-50 backdrop-filter backdrop-blur-sm items-center h-screen  top-0 col-span-1 sidebar transition-all duration-300"
+            className="fixed flex flex-col left-0 justify-around bg-[#353535] text-white backdrop-filter backdrop-blur-sm items-center h-screen  top-0 col-span-1 sidebar transition-all duration-300"
             style={{ width: "0px" }}
           >
             {isOpen && (
@@ -250,32 +250,32 @@ function UserHome() {
           </div>
 
           <button
-            className="fixed top-6 left-6 bg-black p-3 rounded-full w-14 h-14 z-20 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-colors duration-200 flex items-center justify-center"
+            className="fixed top-6 left-6 bg-[#daa510] p-3 rounded-full w-14 h-14 z-20 hover:bg-[#e6b854] focus:outline-none focus:ring-2 focus:ring-gray-300 transition-colors duration-200 flex items-center justify-center"
             onClick={toggleSidebar}
           >
             {isOpen ? (
               <FontAwesomeIcon
                 icon={faClose}
-                style={{ color: "white" }}
+                style={{ color: "black" }}
                 size="lg"
               />
             ) : (
               <FontAwesomeIcon
                 icon={faBars}
-                style={{ color: "white" }}
+                style={{ color: "black" }}
                 size="lg"
               />
             )}
           </button>
 
           {/* Main Content */}
-          <div className=" flex flex-col items-center justify-center p-6 bg-gray-100 min-h-screen">
-            <h1 className="text-center font-black my-2 text-2xl mb-16">
+          <div className=" flex flex-col items-center justify-center p-6 bg-surface text-white min-h-screen">
+            <h1 className="text-center font-black my-2 text-4xl mb-16 text-white">
               Welcome {userDetails.name}!
             </h1>
 
             {/* Hostel Details */}
-            <div className="border-2 border-black grid grid-cols-4 gap-x-5 gap-y-2 items-center w-[60%] p-2 rounded-lg shadow-lg bg-white">
+            <div className="border-2 border-black grid grid-cols-4 gap-x-5 gap-y-2 items-center w-[60%] p-5 rounded-lg shadow-lg bg-mixed">
               {/* Hostel Name */}
               <div className="contents">
                 <label htmlFor="hostelName" className="text-right pr-2">
@@ -288,7 +288,7 @@ function UserHome() {
                   placeholder="Hostel Name"
                   value={hostel ? hostel.name : "Loading..."}
                   readOnly
-                  className="p-2 border border-gray-300 rounded w-full"
+                  className="p-2 border border-gray-300 rounded w-full text-black"
                 />
               </div>
 
@@ -304,7 +304,7 @@ function UserHome() {
                   placeholder="Location"
                   value={hostel ? hostel.address : "Loading..."}
                   readOnly
-                  className="p-2 border border-gray-300 rounded w-full"
+                  className="p-2 border border-gray-300 rounded w-full text-black"
                 />
               </div>
 
@@ -320,7 +320,7 @@ function UserHome() {
                   placeholder="Rent"
                   value={room ? room.rentperperson : "Loading..."}
                   readOnly
-                  className="p-2 border border-gray-300 rounded w-full"
+                  className="p-2 border border-gray-300 rounded w-full text-black"
                 />
               </div>
 
@@ -336,13 +336,14 @@ function UserHome() {
                   placeholder="Rent Due Date"
                   value={formattedRentDueDate}
                   readOnly
-                  className="p-2 border border-gray-300 rounded w-full"
+                  className="p-2 border border-gray-300 rounded w-full text-black"
                 />
               </div>
             </div>
 
             {/* User Details */}
-            <div className="border-2 border-black grid grid-cols-4 gap-x-5 gap-y-2 items-center w-[60%] p-2 mt-10 rounded-lg shadow-lg bg-white">
+            <div className="border-2 border-black grid grid-cols-4 gap-x-5 gap-y-2 items-center w-[60%] p-2 mt-10 rounded-lg shadow-lg
+             bg-mixed">
               {/* Name */}
               <div className="contents">
                 <label htmlFor="name" className="text-right pr-2">
@@ -356,7 +357,7 @@ function UserHome() {
                   value={userDetails.name}
                   onChange={handleChange}
                   readOnly={!isEditable}
-                  className="p-2 border border-gray-300 rounded w-full"
+                  className="p-2 border border-gray-300 rounded w-full text-black"
                 />
               </div>
 
@@ -373,7 +374,7 @@ function UserHome() {
                   value={userDetails.address}
                   onChange={handleChange}
                   readOnly={!isEditable}
-                  className="p-2 border border-gray-300 rounded w-full"
+                  className="p-2 border border-gray-300 rounded w-full text-black"
                 />
               </div>
 
@@ -390,7 +391,7 @@ function UserHome() {
                   value={userDetails.email}
                   onChange={handleChange}
                   readOnly={!isEditable}
-                  className="p-2 border border-gray-300 rounded w-full"
+                  className="p-2 border border-gray-300 rounded w-full text-black"
                 />
               </div>
 
@@ -407,7 +408,7 @@ function UserHome() {
                   value={userDetails.contact}
                   onChange={handleChange}
                   readOnly={!isEditable}
-                  className="p-2 border border-gray-300 rounded w-full"
+                  className="p-2 border border-gray-300 rounded w-full text-black"
                 />
               </div>
 
@@ -424,7 +425,7 @@ function UserHome() {
                   value={userDetails.age}
                   onChange={handleChange}
                   readOnly={!isEditable}
-                  className="p-2 border border-gray-300 rounded w-full"
+                  className="p-2 border border-gray-300 rounded w-full text-black"
                 />
               </div>
 
@@ -441,7 +442,7 @@ function UserHome() {
                   value={userDetails.gender}
                   onChange={handleChange}
                   readOnly={!isEditable}
-                  className="p-2 border border-gray-300 rounded w-full"
+                  className="p-2 border border-gray-300 rounded w-full text-black"
                 />
               </div>
 
@@ -458,7 +459,7 @@ function UserHome() {
                   value={userDetails.profession}
                   onChange={handleChange}
                   readOnly={!isEditable}
-                  className="p-2 border border-gray-300 rounded w-full"
+                  className="p-2 border border-gray-300 rounded w-full text-black"
                 />
               </div>
 

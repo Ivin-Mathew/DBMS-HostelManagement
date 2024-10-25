@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../Supabase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faHotel, faMoneyBill } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faHotel, faClose, faBars } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import { gsap } from "gsap";
+
 
 function WardenHome() {
   const [inputs, setInputs] = useState({
@@ -16,6 +18,8 @@ function WardenHome() {
   });
 
   const [isEditable, setIsEditable] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -84,6 +88,15 @@ function WardenHome() {
   };
   console.log(inputs.id);
 
+  const toggleSidebar = () => {
+    const sidebar = document.querySelector(".sidebar");
+    if (isOpen) {
+      gsap.to(sidebar, { width: "0px", duration: 0 }); // Collapse
+    } else {
+      gsap.to(sidebar, { width: "300px", duration: 0 }); // Expand
+    }
+    setIsOpen(!isOpen);
+  };
   const toggleEdit = () => {
     setIsEditable(!isEditable);
   };
@@ -107,8 +120,8 @@ function WardenHome() {
 
   return (
     <>
-      <div className="grid grid-cols-4 grid-rows-1">
-        <div className='flex flex-col bg-blue-500 items-center h-screen sticky top-0 col-span-1'>
+      <div className="flex flex-row">
+        {/* <div className='flex flex-col bg-blue-500 items-center h-screen sticky top-0 col-span-1'>
           <h1 className='text-center font-black my-2 text-2xl'>Home</h1>
           <div className='flex bg-blue w-24 h-24 rounded-full my-2'></div>
           <div className='flex flex-col items-center justify-center mt-16'>
@@ -131,89 +144,75 @@ function WardenHome() {
           >
             Logout
           </button>
-        </div>
+        </div> */}
 
-        <div className='flex flex-col items-center gap-5 ml-8 justify-center col-span-3'>
-          <h1 className='text-center font-black my-2 text-2xl'>Welcome WardenName!</h1>
+          <div
+            className="flex flex-col bg-[#353535] text-white backdrop-filter backdrop-blur-sm items-center sticky top-0 left-0 
+            sidebar transition-all duration-300
+            py-36"
+            style={{ width: "0px" }}
+          >
+            {isOpen && (
+              <div className="flex items-center mb-6">
+                <img
+                  src="/logo.png"
+                  alt="Warden Dashboard Logo"
+                  className="h-24 w-24 mr-4"
+                />
+              </div>
+            )}
+            <div className="flex flex-col items-center justify-center ">
+              {isOpen && (
+                <div
+                  className="flex items-center gap-2 my-5 hover:text-white hover:cursor-pointer"
+                  onClick={() => navigate("/viewInmates")}
+                >
+                  <FontAwesomeIcon icon={faSearch} />
+                  <h1>View Inmates</h1>
+                </div>
+              )}
+              {isOpen && (
+                <div className="flex items-center gap-2 my-5 hover:cursor-pointer hover:text-white" onClick={()=> navigate(`/hostelManagement/${inputs.id}`)}>
+                <FontAwesomeIcon icon={faHotel} />
+                <h1>Hostel Details</h1>
+                </div>
+              )}
+            </div>
+            {isOpen && (
+              <button
+                className="items-center mt-20  mx-auto block font-medium text-center text-white bg-red-500 border border-transparent rounded py-1 px-2 hover:bg-red-700"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            )}
+          </div>
 
-          {/* <div className="border-2 border-black grid grid-cols-4 gap-x-5 gap-y-2 items-center w-[85%] p-2 rounded-lg shadow-lg bg-white">
-            <div className="contents">
-              <label htmlFor="hostelName" className="text-right pr-2">Hostel Name</label>
-              <input
-                type="text"
-                id="hostelName"
-                name="hostelName"
-                placeholder="some text"
-                value={inputs.hostelName}
-                readOnly
-                className="p-2 border border-gray-300 rounded w-full"
+          <button
+            className="fixed top-6 left-6 bg-[#daa510] p-3 rounded-full w-14 h-14 z-20 hover:bg-[#e6b854] focus:outline-none focus:ring-2 focus:ring-gray-300 transition-colors duration-200 flex items-center justify-center"
+            onClick={toggleSidebar}
+          >
+            {isOpen ? (
+              <FontAwesomeIcon
+                icon={faClose}
+                style={{ color: "black" }}
+                size="lg"
               />
-            </div>
-            <div className="contents">
-              <label htmlFor="location" className="text-right pr-2">Location</label>
-              <input
-                type="text"
-                id="location"
-                name="location"
-                placeholder="some text"
-                value={inputs.location}
-                readOnly
-                className="p-2 border border-gray-300 rounded w-full"
+            ) : (
+              <FontAwesomeIcon
+                icon={faBars}
+                style={{ color: "black" }}
+                size="lg"
               />
-            </div>
-            <div className="contents">
-              <label htmlFor="roomId" className="text-right pr-2">RoomId</label>
-              <input
-                type="text"
-                id="roomId"
-                name="roomId"
-                placeholder="some text"
-                value={inputs.roomId}
-                readOnly
-                className="p-2 border border-gray-300 rounded w-full"
-              />
-            </div>
-            <div className="contents">
-              <label htmlFor="contractUpto" className="text-right pr-2">Contract Upto</label>
-              <input
-                type="text"
-                id="contractUpto"
-                name="contractUpto"
-                placeholder="some text"
-                value={inputs.contractUpto}
-                readOnly
-                className="p-2 border border-gray-300 rounded w-full"
-              />
-            </div>
-            <div className="contents">
-              <label htmlFor="rent" className="text-right pr-2">Rent</label>
-              <input
-                type="text"
-                id="rent"
-                name="rent"
-                placeholder="some text"
-                value={inputs.rent}
-                readOnly
-                className="p-2 border border-gray-300 rounded w-full"
-              />
-            </div>
-            <div className="contents">
-              <label htmlFor="rentDueDate" className="text-right pr-2">Rent Due Date</label>
-              <input
-                type="text"
-                id="rentDueDate"
-                name="rentDueDate"
-                placeholder="some text"
-                value={inputs.rentDueDate}
-                readOnly
-                className="p-2 border border-gray-300 rounded w-full"
-              />
-            </div>
-          </div> */}
+            )}
+          </button>
 
-          <div className="border-2 border-black grid grid-cols-4 gap-x-5 gap-y-2 items-center w-[85%] p-2 mt-10 rounded-lg shadow-lg bg-white">
-            <div className="contents">
-              <label htmlFor="name" className="text-right pr-2">Name</label>
+        <div className="flex flex-col items-center justify-center p-6 bg-surface text-white w-full min-h-screen">
+          <h1 className="text-center font-black text-4xl mt-16 md:mt-8 md:mb-16 text-white">Welcome WardenName!</h1>
+
+          <div className="border-2 border-black flex flex-col md:flex-none gap-10 text-left md:grid md:grid-cols-4 md:gap-x-5 md:gap-y-2 items-center w-[85%] p-10 mt-10 rounded-lg shadow-lg bg-mixed">
+            <div className="flex flex-col md:flex-row">
+              <label htmlFor="name" className="md:text-right pr-2">Name</label>
               <input
                 type="text"
                 id="name"
@@ -222,11 +221,11 @@ function WardenHome() {
                 value={inputs.name}
                 onChange={handleChange}
                 readOnly={!isEditable}
-                className="p-2 border border-gray-300 rounded w-full"
+                className="p-2 border border-gray-300 rounded text-black font-[600] w-[20rem]"
               />
             </div>
-            <div className="contents">
-              <label htmlFor="address" className="text-right pr-2">Address</label>
+            <div className="flex flex-col md:flex-row">
+              <label htmlFor="address" className="md:text-right pr-2">Address</label>
               <input
                 type="text"
                 id="address"
@@ -235,11 +234,11 @@ function WardenHome() {
                 value={inputs.address}
                 onChange={handleChange}
                 readOnly={!isEditable}
-                className="p-2 border border-gray-300 rounded w-full"
+                className="p-2 border border-gray-300 rounded text-black font-[600] w-[20rem]"
               />
             </div>
-            <div className="contents">
-              <label htmlFor="email" className="text-right pr-2">Email</label>
+            <div className="flex flex-col md:flex-row">
+              <label htmlFor="email" className="md:text-right pr-2">Email</label>
               <input
                 type="text"
                 id="email"
@@ -248,11 +247,11 @@ function WardenHome() {
                 value={inputs.email}
                 onChange={handleChange}
                 readOnly={!isEditable}
-                className="p-2 border border-gray-300 rounded w-full"
+                className="p-2 border border-gray-300 rounded text-black font-[600] w-[20rem]"
               />
             </div>
-            <div className="contents">
-              <label htmlFor="contact" className="text-right pr-2">Contact</label>
+            <div className="flex flex-col md:flex-row">
+              <label htmlFor="contact" className="md:text-right pr-2">Contact</label>
               <input
                 type="text"
                 id="contact"
@@ -261,11 +260,11 @@ function WardenHome() {
                 value={inputs.contact}
                 onChange={handleChange}
                 readOnly={!isEditable}
-                className="p-2 border border-gray-300 rounded w-full"
+                className="p-2 border border-gray-300 rounded text-black font-[600] w-[20rem]"
               />
             </div>
-            <div className="contents">
-              <label htmlFor="age" className="text-right pr-2">Age</label>
+            <div className="flex flex-col md:flex-row">
+              <label htmlFor="age" className="md:text-right pr-2">Age</label>
               <input
                 type="text"
                 id="age"
@@ -274,11 +273,11 @@ function WardenHome() {
                 value={inputs.age}
                 onChange={handleChange}
                 readOnly={!isEditable}
-                className="p-2 border border-gray-300 rounded w-full"
+                className="p-2 md:ml-3 border border-gray-300 rounded text-black font-[600] w-[20rem]"
               />
             </div>
-            <div className="contents">
-              <label htmlFor="gender" className="text-right pr-2">Gender</label>
+            <div className="flex flex-col md:flex-row">
+              <label htmlFor="gender" className="md:text-right pr-2">Gender</label>
               <input
                 type="text"
                 id="gender"
@@ -287,10 +286,10 @@ function WardenHome() {
                 value={inputs.gender}
                 onChange={handleChange}
                 readOnly={!isEditable}
-                className="p-2 border border-gray-300 rounded w-full"
+                className="p-2 border border-gray-300 rounded text-black font-[600] w-[20rem]"
               />
             </div>
-            <div className="col-span-2 flex justify-end gap-2 mt-2">
+            <div className="col-span-4 flex justify-end gap-2 mt-2">
               <button className='inline-block font-medium text-center text-white bg-blue-500 border border-transparent rounded py-1 px-2 hover:bg-blue-700' onClick={saveData}>Save</button>
               <button className='inline-block font-medium text-center text-white bg-blue-500 border border-transparent rounded py-1 px-2 hover:bg-blue-700' onClick={toggleEdit}>{isEditable ? 'Disable Edit' : 'Edit'}</button>
             </div>

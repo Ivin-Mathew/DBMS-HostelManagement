@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSearch,
   faHotel,
-  faMoneyBill,
   faBars,
   faClose,
 } from "@fortawesome/free-solid-svg-icons";
@@ -275,7 +274,7 @@ function UserHome() {
             </h1>
 
             {/* Hostel Details */}
-            <div className="border-2 border-black grid grid-cols-4 gap-x-5 gap-y-2 items-center w-[60%] p-5 rounded-lg shadow-lg bg-mixed">
+            <div className="border-2 border-black grid grid-cols-2 md:grid-cols-4 gap-x-5 gap-y-2 items-center w-[60%] p-5 rounded-lg shadow-lg bg-mixed">
               {/* Hostel Name */}
               <div className="contents">
                 <label htmlFor="hostelName" className="text-right pr-2">

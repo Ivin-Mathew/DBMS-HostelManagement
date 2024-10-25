@@ -127,10 +127,14 @@ const HostelSearch = () => {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex flex-row h-[100dvh]">
       {/* Sidebar */}
       <div
-        className="fixed flex flex-col left-0  text-black bg-gray-600 bg-opacity-50 backdrop-filter backdrop-blur-lg items-center h-screen gap-16 top-0 col-span-1 sidebar transition-all duration-300"
+        className="flex flex-col items-center 
+        sticky top-0 left-0  text-black 
+        bg-slate-400 gap-16
+        sidebar
+        transition-all duration-300"
         style={{ width: "0px" }}
       >
         {isOpen && (
@@ -265,7 +269,7 @@ const HostelSearch = () => {
             placeholder="Search Hostels by Name"
             value={searchTerm}
             onChange={handleSearchChange}
-            className=" p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 w-[60%]"
+            className=" p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 w-[50%]"
           />
           <button
             onClick={handleSort}
@@ -280,60 +284,62 @@ const HostelSearch = () => {
         {loading ? (
           <ActivityIndicator />
         ) : (
-          <div className="ml-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 mt-20  ">
-            {filteredHostels.length === 0 ? (
-              <div className="flex flex-col gap-3 text-center items-center justify-center text-gray-500 col-span-full mt-80">
-                <FontAwesomeIcon icon={faHotel} size="5x" />
-                <p className="text-2xl">No Hostels</p>
-              </div>
-            ) : (
-              filteredHostels.map((hostel) => (
-                <div
-                  key={hostel.hostelid}
-                  className="border rounded-lg overflow-hidden shadow-md"
-                >
-                  {/* Hostel Image */}
-                  <img
-                    src={
-                      hostel.image_url || "https://via.placeholder.com/300x200"
-                    }
-                    alt={hostel.name}
-                    className="w-full h-48 object-cover"
-                  />
-
-                  {/* Hostel Details */}
-                  <div className="p-4">
-                    <h3 className="text-xl font-semibold mb-2">
-                      {hostel.name}
-                    </h3>
-                    <p className="text-gray-600 mb-1">
-                      <strong>Rent:</strong> ₹{hostel.rentPerPerson}
-                    </p>
-                    <p className="text-gray-600 mb-1">
-                      <strong>Location:</strong> {hostel.location}
-                    </p>
-                    <p className="text-gray-600 mb-1">
-                      <strong>Mess Available:</strong>{" "}
-                      {hostel.mess_available ? "Yes" : "No"}
-                    </p>
-                    <p className="text-gray-600 mb-1">
-                      <strong>Gender:</strong> {hostel.gender}
-                    </p>
-                    <p className="text-gray-600 mb-1">
-                      <strong>Occupant Type:</strong> {hostel.occupanttype}
-                    </p>
-
-                    {/* Link to Hostel Details or Booking */}
-                    <Link
-                      to={`/hostelDetails/${hostel.hostelid}`}
-                      className="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                    >
-                      View Details
-                    </Link>
-                  </div>
+          <div className="ml-10 mt-20 flex items-center justify-center">
+            <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+              {filteredHostels.length === 0 ? (
+                <div className="flex flex-col gap-3 text-center items-center justify-center text-gray-500 col-span-full mt-80">
+                  <FontAwesomeIcon icon={faHotel} size="5x" />
+                  <p className="text-2xl">No Hostels</p>
                 </div>
-              ))
-            )}
+              ) : (
+                filteredHostels.map((hostel) => (
+                  <div
+                    key={hostel.hostelid}
+                    className="border rounded-lg overflow-hidden shadow-md"
+                  >
+                    {/* Hostel Image */}
+                    <img
+                      src={
+                        hostel.image_url || "https://via.placeholder.com/300x200"
+                      }
+                      alt={hostel.name}
+                      className="w-full h-48 object-cover"
+                    />
+
+                    {/* Hostel Details */}
+                    <div className="p-4">
+                      <h3 className="text-xl font-semibold mb-2">
+                        {hostel.name}
+                      </h3>
+                      <p className="text-gray-600 mb-1">
+                        <strong>Rent:</strong> ₹{hostel.rentPerPerson}
+                      </p>
+                      <p className="text-gray-600 mb-1">
+                        <strong>Location:</strong> {hostel.location}
+                      </p>
+                      <p className="text-gray-600 mb-1">
+                        <strong>Mess Available:</strong>{" "}
+                        {hostel.mess_available ? "Yes" : "No"}
+                      </p>
+                      <p className="text-gray-600 mb-1">
+                        <strong>Gender:</strong> {hostel.gender}
+                      </p>
+                      <p className="text-gray-600 mb-1">
+                        <strong>Occupant Type:</strong> {hostel.occupanttype}
+                      </p>
+
+                      {/* Link to Hostel Details or Booking */}
+                      <Link
+                        to={`/hostelDetails/${hostel.hostelid}`}
+                        className="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                      >
+                        View Details
+                      </Link>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         )}
       </div>

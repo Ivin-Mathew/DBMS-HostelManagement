@@ -9,6 +9,7 @@ import EditRoom from './pages/EditRoom';
 import HostelSearch from './pages/HostelSearch';
 import HostelDetails from './pages/HostelDetails';
 import ViewInmates from './pages/ViewInmates';
+import UserHostelDetails from './pages/UserHostelDetails';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/addRoom/:hostelID" element={<AddRoom />} />
         <Route path='/editRoom/:roomID' element={<EditRoom />} />
         <Route path='/viewInmates' element={<ViewInmates />} />
+        <Route path="/userHostelDetails" element={<UserHostelDetails />} />
       </Routes>
     </BrowserRouter>
     </>

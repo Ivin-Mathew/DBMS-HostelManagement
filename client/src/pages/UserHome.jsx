@@ -226,18 +226,18 @@ function UserHome() {
                 </div>
               )}
               {isOpen && (
-                <div className="flex items-center gap-2 my-5 hover:text-white">
+                <div className="flex items-center gap-2 my-5 hover:text-white hover:cursor-pointer" onClick={()=> navigate("/userHostelDetails")}>
                   <FontAwesomeIcon icon={faHotel} />
                   <h1>Hostel Details</h1>
                 </div>
               )}
 
-              {isOpen && (
+              {/* {isOpen && (
                 <div className="flex items-center gap-2 my-5 hover:text-white">
                   <FontAwesomeIcon icon={faMoneyBill} />
                   <h1>Payment</h1>
                 </div>
-              )}
+              )} */}
             </div>
             {isOpen && (
               <button

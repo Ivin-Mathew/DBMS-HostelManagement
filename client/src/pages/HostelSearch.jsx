@@ -235,7 +235,13 @@ const HostelSearch = () => {
               <div className="mt-6" onClick={() => {
                 navigate('/userHome')
               }}>
-                <p className="text-lg text-red-600 hover:text-red-950">Back</p>
+                <div
+                  className="text-lg text-center hover:text-black font-bold bg-red-600 py-3
+                  border-[1px] border-slate-300 rounded-xl"
+                  onClick={() => navigate("/search")}
+                >
+                  {isOpen && "Back"}
+                </div>
               </div>
             </div>
           </>

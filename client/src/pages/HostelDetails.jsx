@@ -14,7 +14,6 @@ const HostelDetails = () => {
   const navigate = useNavigate(); // For redirection
   const [hostel, setHostel] = useState(null);
   const [rooms, setRooms] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [applyingRoomId, setApplyingRoomId] = useState(null); // To track which room is being applied to
   const [message, setMessage] = useState(null); // To display success/error messages
@@ -22,22 +21,6 @@ const HostelDetails = () => {
   const [selectedRoom, setSelectedRoom] = useState(null); // To store the room being applied to
   const [isApplying, setIsApplying] = useState(false); // To show loading overlay during application
   const [isOpen, setIsOpen] = useState(false);
-
-  const images = [
-    { src: "/src/assets/Hostelimage.jpg", alt: "First slide" },
-    { src: "/src/assets/Hostelimage2.jpg", alt: "Second slide" },
-    { src: "/src/assets/Hostelimage3.jpg", alt: "Third slide" },
-  ];
-
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
-  };
 
   const fetchHostelDetails = async () => {
     const { data, error } = await supabase

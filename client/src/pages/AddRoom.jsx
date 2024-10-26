@@ -67,15 +67,15 @@ const AddRoom = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
+    <div className="min-h-screen flex items-center justify-center bg-surface text-white p-4">
+      <div className="bg-mixed p-8 rounded-lg shadow-lg w-full max-w-lg">
         <h2 className="text-2xl font-bold text-center mb-6">
           Add New Room
         </h2>
         <form onSubmit={handleSubmit}>
           {/* Room Type */}
           <div className="mb-4">
-            <label htmlFor="roomType" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="roomType" className="block text-sm font-medium">
               Room Type
             </label>
             <select
@@ -84,7 +84,7 @@ const AddRoom = () => {
               value={formData.roomType}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full px-3 py-2 border bg-gray-300 text-black rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             >
               <option value="">Select Room Type</option>
               <option value="1">1 Person Room</option>
@@ -96,7 +96,7 @@ const AddRoom = () => {
 
           {/* Rent Per Person */}
           <div className="mb-4">
-            <label htmlFor="rentPerPerson" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="rentPerPerson" className="block text-sm font-medium">
               Rent Per Person
             </label>
             <input
@@ -115,7 +115,7 @@ const AddRoom = () => {
 
           {/* Rent Due Date */}
           <div className="mb-4">
-            <label htmlFor="rentDueDate" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="rentDueDate" className="block text-sm font-medium">
               Rent Due Date
             </label>
             <input
@@ -125,7 +125,7 @@ const AddRoom = () => {
               value={formData.rentDueDate}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 text-black rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
@@ -139,7 +139,7 @@ const AddRoom = () => {
               onChange={handleChange}
               className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
             />
-            <label htmlFor="attachedBathroom" className="ml-2 block text-sm text-gray-700">
+            <label htmlFor="attachedBathroom" className="ml-2 block text-sm">
               Attached Bathroom
             </label>
           </div>
@@ -154,7 +154,7 @@ const AddRoom = () => {
               onChange={handleChange}
               className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
             />
-            <label htmlFor="furnitureAvailable" className="ml-2 block text-sm text-gray-700">
+            <label htmlFor="furnitureAvailable" className="ml-2 block text-sm">
               Furniture Available
             </label>
           </div>
@@ -169,7 +169,7 @@ const AddRoom = () => {
               onChange={handleChange}
               className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
             />
-            <label htmlFor="acAvailable" className="ml-2 block text-sm text-gray-700">
+            <label htmlFor="acAvailable" className="ml-2 block text-sm">
               AC Available
             </label>
           </div>

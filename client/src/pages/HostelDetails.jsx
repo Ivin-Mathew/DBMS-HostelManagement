@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "../Supabase"; // Ensure correct path
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { applyToRoom } from "../components/ApplyRoom"; // Import the applyToRoom function
 import ActivityIndicator from "../components/ActivityIndicator";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,7 +14,9 @@ const HostelDetails = () => {
   const navigate = useNavigate(); // For redirection
   const [hostel, setHostel] = useState(null);
   const [rooms, setRooms] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [warden,setWarden] = useState(null);
+
+
   const [loading, setLoading] = useState(true);
   const [applyingRoomId, setApplyingRoomId] = useState(null); // To track which room is being applied to
   const [message, setMessage] = useState(null); // To display success/error messages
@@ -22,22 +24,6 @@ const HostelDetails = () => {
   const [selectedRoom, setSelectedRoom] = useState(null); // To store the room being applied to
   const [isApplying, setIsApplying] = useState(false); // To show loading overlay during application
   const [isOpen, setIsOpen] = useState(false);
-
-  const images = [
-    { src: "/src/assets/Hostelimage.jpg", alt: "First slide" },
-    { src: "/src/assets/Hostelimage2.jpg", alt: "Second slide" },
-    { src: "/src/assets/Hostelimage3.jpg", alt: "Third slide" },
-  ];
-
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
-  };
 
   const fetchHostelDetails = async () => {
     const { data, error } = await supabase
@@ -53,6 +39,7 @@ const HostelDetails = () => {
     } else {
       setHostel(data);
       fetchRooms(data.hostelid);
+      fetchWardenDetails(data.wardenid);
     }
   };
 
@@ -70,6 +57,23 @@ const HostelDetails = () => {
     }
     setLoading(false);
   };
+
+  const fetchWardenDetails = async (wardenId) =>{
+    const{data,error} = await supabase
+    .from("wardens")
+    .select("*")
+    .eq("wardenid",wardenId)
+    .single();
+
+    if (error) {
+      console.error("Error fetching room details:", error);
+      alert("Failed to fetch room details.");
+    } else {
+      setWarden(data);
+    }
+    setLoading(false);
+
+  }
 
   useEffect(() => {
     if (hostelid) {
@@ -133,7 +137,7 @@ const HostelDetails = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
+      <div className="flex items-center justify-center h-screen bg-surface text-white">
         <ActivityIndicator />
       </div>
     );
@@ -148,30 +152,52 @@ const HostelDetails = () => {
   }
 
   return (
-    <div className="relative min-h-screen ">
+    <div className="flex flex-row h-[100dvh] ">
       {/* Sidebar */}
       <div
-        className="fixed flex flex-col justify-center left-0  bg-gray-600 bg-opacity-50 backdrop-filter backdrop-blur-sm items-center h-screen  top-0 col-span-1 sidebar transition-all duration-300 z-10"
-        style={{ width: "0px" }}
+        className="flex flex-col 
+        bg-[#353535] text-white
+        items-center justify-center text-center h-screen 
+        sticky top-0 left-0  sidebar 
+        transition-all duration-300"
       >
-        {/* <h1 className="font-bold text-2xl mb-6">Home</h1> */}
-        <div className="flex flex-col items-center justify-center mt-16 gap-10">
-          <h2 className="text-lg text-white hover:cursor-pointer">
-            {isOpen && "Warden Name"}
+        <div className="flex flex-col items-center justify-center px-[12px] gap-10">
+          <h2 className="text-lg hover:text-white">
+            {isOpen &&
+            <div>
+              <p>Warden Name:</p>
+              <p>{warden.name}</p>
+            </div>
+            }
           </h2>
-          <h2 className="text-lg text-white hover:cursor-pointer">
-            {isOpen && "Contact Number"}
+          <h2 className="text-lg hover:text-white">
+          {isOpen &&
+            <div>
+              <p>Warden Contact:</p>
+              <p>{warden.contact}</p>
+            </div>
+            }          </h2>
+          <h2 className="text-lg hover:text-white">
+          {isOpen &&
+            <div>
+              <p>Warden Email:</p>
+              <p>{warden.email}</p>
+            </div>
+            }            
           </h2>
-          <h2 className="text-lg text-white hover:cursor-pointer">{isOpen && "Email"}</h2>
-          <h2
-            className="text-lg hover:text-white hover:cursor-pointer text-red-600"
-            onClick={() => navigate("/search")}
-          >
-            {isOpen && "Back"}
-          </h2>
+            {isOpen &&
+            <div
+              className="text-lg hover:text-black font-bold bg-red-600 
+              py-3 px-8 
+              border-[1px] border-slate-300 rounded-xl"
+              onClick={() => navigate("/userHome")}
+            >
+              Back
+            </div>
+            }
+          
         </div>
       </div>
-
       <button
         className="fixed top-6 left-6 bg-[#daa510] p-3 rounded-full w-14 h-14 z-20 hover:bg-[#e6b854] focus:outline-none focus:ring-2 focus:ring-gray-300 transition-colors duration-200 flex items-center justify-center"
         onClick={toggleSidebar}
@@ -188,7 +214,7 @@ const HostelDetails = () => {
       </button>
 
       {/* Main Content */}
-      <div className="flex flex-col items-center bg-[#353535] justify-center p-6  min-h-screen">
+      <div className="flex flex-col items-center bg-surface justify-center p-6  min-h-screen w-full">
         {/* Hostel Image and Name */}
         <div className="flex flex-col items-center w-full max-w-2xl mx-auto space-y-4">
           <div className="w-full h-64 overflow-hidden rounded-lg shadow-lg">
@@ -238,18 +264,18 @@ const HostelDetails = () => {
               rooms.map((room) => (
                 <div
                   key={room.roomid}
-                  className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 ease-in-out"
+                  className="bg-mixed p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 ease-in-out"
                 >
-                  <h4 className="text-xl font-semibold mb-3 text-gray-800">
+                  <h4 className="text-xl font-semibold mb-3">
                     {room.roomType}
                   </h4>
-                  <p className="text-gray-600">
+                  <p className="text-white">
                     <strong>Max Occupants:</strong> {room.maxoccupants}
                   </p>
-                  <p className="text-gray-600">
+                  <p className="text-white">
                     <strong>Vacancies:</strong> {room.vacancies}
                   </p>
-                  <p className="text-gray-600">
+                  <p className="text-white">
                     <strong>Rent/Person:</strong> ₹{room.rentperperson}
                   </p>
                   <button
@@ -268,64 +294,14 @@ const HostelDetails = () => {
             )}
           </div>
         </div>
-
-        {/* Image Carousel */}
-        {/* <div className="relative w-full max-w-xl mx-auto mt-10">
-          <div className="overflow-hidden rounded-lg shadow-lg">
-            <img
-              src={images[currentIndex].src}
-              alt={images[currentIndex].alt}
-              className="w-full h-64 object-cover duration-200 ease-in-out"
-            />
-          </div> */}
-
-          {/* Navigation Buttons */}
-          {/* <button
-            className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-90 p-3 rounded-r-md shadow-md transition"
-            onClick={prevSlide}
-          >
-            &#10094;
-          </button>
-          <button
-            className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-90 p-3 rounded-l-md shadow-md transition"
-            onClick={nextSlide}
-          >
-            &#10095;
-          </button> */}
-
-          {/* Indicators */}
-          {/* <div className="flex justify-center mt-4 space-x-2">
-            {images.map((_, index) => (
-              <button
-                key={index}
-                className={`h-3 w-3 rounded-full transition-colors duration-300 ${
-                  index === currentIndex ? "bg-gray-800" : "bg-gray-400"
-                }`}
-                onClick={() => setCurrentIndex(index)}
-              ></button>
-            ))}
-          </div>
-        </div>  */}
       </div>
 
-      {/* Back Button */}
-      {/* <div className="mt-8">
-          <Link
-            to="/"
-            className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition"
-          >
-            Back to Search
-          </Link>
-        </div> */}
-
-      {/* Confirmation Modal */}
       {showConfirmModal && selectedRoom && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white rounded-lg p-6 w-80">
             <h2 className="text-xl font-semibold mb-4">Confirm Application</h2>
             <p className="mb-6">
-              Are you sure you want to enroll into the "{selectedRoom.roomType}"
-              room?
+              Are you sure you want to enroll into this room?
             </p>
             <div className="flex justify-end gap-4">
               <button

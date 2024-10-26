@@ -14,25 +14,9 @@ const UserHostelDetails = () => {
   const [warden,setWarden] = useState(null);
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [message, setMessage] = useState(null); // To display success/error messages
+  const [message] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  const images = [
-    { src: "/src/assets/Hostelimage.jpg", alt: "First slide" },
-    { src: "/src/assets/Hostelimage2.jpg", alt: "Second slide" },
-    { src: "/src/assets/Hostelimage3.jpg", alt: "Third slide" },
-  ];
-
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
-  };
 
   const fetchUserDetails = async () => {
     const { data: user, error: userError } = await supabase.auth.getUser();
@@ -153,26 +137,45 @@ const UserHostelDetails = () => {
       <div
         className="flex flex-col 
         bg-[#353535] text-white backdrop-filter backdrop-blur-sm 
-        items-center justify-center h-screen 
+        items-center justify-center text-center h-screen 
         sticky top-0 left-0  sidebar 
         transition-all duration-300"
       >
         <div className="flex flex-col items-center justify-center px-[12px] gap-10">
           <h2 className="text-lg hover:text-white">
-            {isOpen && `Warden Name : ${warden.name}`}
+            {isOpen &&
+            <div>
+              <p>Warden Name:</p>
+              <p>{warden.name}</p>
+            </div>
+            }
           </h2>
           <h2 className="text-lg hover:text-white">
-            {isOpen && `Warden Contact : ${warden.contact}`}
-          </h2>
+          {isOpen &&
+            <div>
+              <p>Warden Contact:</p>
+              <p>{warden.contact}</p>
+            </div>
+            }          </h2>
           <h2 className="text-lg hover:text-white">
-          {isOpen && `Warden Email : ${warden.email}`}
-            </h2>
-          <h2
-            className="text-lg hover:text-white text-red-600"
-            onClick={() => navigate("/search")}
-          >
-            {isOpen && "Back"}
+          {isOpen &&
+            <div>
+              <p>Warden Email:</p>
+              <p>{warden.email}</p>
+            </div>
+            }            
           </h2>
+            {isOpen &&
+            <div
+              className="text-lg hover:text-black font-bold bg-red-600 
+              py-3 px-8 
+              border-[1px] border-slate-300 rounded-xl"
+              onClick={() => navigate("/userHome")}
+            >
+              Back
+            </div>
+            }
+          
         </div>
       </div>
 
@@ -192,19 +195,28 @@ const UserHostelDetails = () => {
       </button>
 
       {/* Main Content */}
-      <div className="flex flex-col items-center justify-center p-6 bg-gray-50 min-h-screen w-full">
+      <div className="flex flex-col items-center justify-center p-6 bg-surface text-white min-h-screen w-full">
         {/* Hostel Image and Name */}
         <div className="flex flex-col items-center w-full max-w-2xl mx-auto space-y-4">
-          <h2 className="text-4xl font-bold text-gray-800 text-center">
+          <h2 className="text-4xl font-bold text-gray-100 text-center">
             {hostel.name}
           </h2>
+        </div>
+
+        <div className="w-[50%] h-64 my-12 overflow-hidden rounded-lg shadow-lg shadow-slate-400 bg-mixed">
+          <img
+            // eslint-disable-next-line no-constant-binary-expression
+            src={`https://cktahfosepepxjmynuuz.supabase.co/storage/v1/object/public/thumbnails/${hostel.name}/${hostel.thumbnail}` || "https://via.placeholder.com/600x400"}
+            alt="Hostel"
+            className="w-full h-full object-cover"
+          />
         </div>
 
         {/* Description */}
         {hostel.description && (
           <div className="mt-8 w-full max-w-2xl mx-auto">
             <h3 className="text-2xl font-semibold mb-4">Description</h3>
-            <p className="text-lg text-gray-700">
+            <p className="text-lg">
               {hostel.description || "No description available."}
             </p>
           </div>
@@ -223,59 +235,21 @@ const UserHostelDetails = () => {
           </div>
         )}
 
-        {/* Image Carousel */}
-        <div className="relative w-full max-w-xl mx-auto mt-10">
-          <div className="overflow-hidden rounded-lg shadow-lg">
-            <img
-              src={images[currentIndex].src}
-              alt={images[currentIndex].alt}
-              className="w-full h-64 object-cover duration-200 ease-in-out"
-            />
-          </div>
-
-          {/* Navigation Buttons */}
-          <button
-            className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-90 p-3 rounded-r-md shadow-md transition"
-            onClick={prevSlide}
-          >
-            &#10094;
-          </button>
-          <button
-            className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-90 p-3 rounded-l-md shadow-md transition"
-            onClick={nextSlide}
-          >
-            &#10095;
-          </button>
-
-          {/* Indicators */}
-          <div className="flex justify-center mt-4 space-x-2">
-            {images.map((_, index) => (
-              <button
-                key={index}
-                className={`h-3 w-3 rounded-full transition-colors duration-300 ${
-                  index === currentIndex ? "bg-gray-800" : "bg-gray-400"
-                }`}
-                onClick={() => setCurrentIndex(index)}
-              ></button>
-            ))}
-          </div>
-        </div>
-
         {/* Room Details */}
         {room && (
-          <div className="mt-8 w-full max-w-2xl mx-auto">
+          <div className="w-full max-w-2xl mx-auto">
             <h3 className="text-2xl font-semibold mb-4">Room Details</h3>
-            <p className="text-lg text-gray-700">
-              <strong>Room Type:</strong> {room.roomType}
+            <p className="text-lg">
+              <strong>Room ID:</strong> {room.roomid}
             </p>
-            <p className="text-lg text-gray-700">
+            <p className="text-lg">
               <strong>Vacancies:</strong> {room.vacancies}
             </p>
-            <p className="text-lg text-gray-700">
+            <p className="text-lg">
               <strong>Rent Due Date:</strong> {new Date(room.rentduedate).toLocaleDateString()}
             </p>
-            <p className="text-lg text-gray-700">
-              <strong>Rent:</strong> ₹{room.rent}
+            <p className="text-lg">
+              <strong>Rent:</strong> ₹{room.rentperperson}
             </p>
           </div>
         )}

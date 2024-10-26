@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faHotel, faClose, faBars } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import { gsap } from "gsap";
+import ActivityIndicator from '../components/ActivityIndicator';
 
 
 function WardenHome() {
@@ -19,11 +20,13 @@ function WardenHome() {
 
   const [isEditable, setIsEditable] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserDetails = async () => {
+      setLoading(true);
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError) {
         console.error('Error fetching user:', userError);
@@ -56,9 +59,13 @@ function WardenHome() {
       } else {
         navigate("/wardenLogin");
       }
+      setLoading(false);
     };
 
+
+    
     fetchUserDetails();
+    
   }, []);
 
   const saveData = async () => {
@@ -207,7 +214,7 @@ function WardenHome() {
             )}
           </button>
 
-        <div className="flex flex-col items-center justify-center p-6 bg-surface text-white w-full min-h-screen">
+        {loading ? <ActivityIndicator /> : <div className="flex flex-col items-center justify-center p-6 bg-surface text-white w-full min-h-screen">
           <h1 className="text-center font-black text-4xl mt-16 md:mt-8 md:mb-16 text-white">Welcome {inputs.name || "Warden"}!</h1>
 
           <div className="border-2 border-black flex flex-col md:flex-none gap-10 text-left md:grid md:grid-cols-4 md:gap-x-5 md:gap-y-2 items-center w-[85%] p-10 mt-10 rounded-lg shadow-lg bg-mixed">
@@ -221,7 +228,7 @@ function WardenHome() {
                 value={inputs.name}
                 onChange={handleChange}
                 readOnly={!isEditable}
-                className="p-2 border border-gray-300 rounded text-black font-[600] w-[20rem]"
+                className="p-2 border border-gray-300 rounded text-black font-[600] w-[75%]"
               />
             </div>
             <div className="flex flex-col md:flex-row">
@@ -234,7 +241,7 @@ function WardenHome() {
                 value={inputs.address}
                 onChange={handleChange}
                 readOnly={!isEditable}
-                className="p-2 border border-gray-300 rounded text-black font-[600] w-[20rem]"
+                className="p-2 border border-gray-300 rounded text-black font-[600] w-[75%]"
               />
             </div>
             <div className="flex flex-col md:flex-row">
@@ -247,7 +254,7 @@ function WardenHome() {
                 value={inputs.email}
                 onChange={handleChange}
                 readOnly={!isEditable}
-                className="p-2 border border-gray-300 rounded text-black font-[600] w-[20rem]"
+                className="p-2 border border-gray-300 rounded text-black font-[600] w-[75%]"
               />
             </div>
             <div className="flex flex-col md:flex-row">
@@ -260,7 +267,7 @@ function WardenHome() {
                 value={inputs.contact}
                 onChange={handleChange}
                 readOnly={!isEditable}
-                className="p-2 border border-gray-300 rounded text-black font-[600] w-[20rem]"
+                className="p-2 border border-gray-300 rounded text-black font-[600] w-[75%]"
               />
             </div>
             <div className="flex flex-col md:flex-row">
@@ -273,7 +280,7 @@ function WardenHome() {
                 value={inputs.age}
                 onChange={handleChange}
                 readOnly={!isEditable}
-                className="p-2 md:ml-3 border border-gray-300 rounded text-black font-[600] w-[20rem]"
+                className="p-2 md:ml-3 border border-gray-300 rounded text-black font-[600] w-[75%]"
               />
             </div>
             <div className="flex flex-col md:flex-row">
@@ -286,7 +293,7 @@ function WardenHome() {
                 value={inputs.gender}
                 onChange={handleChange}
                 readOnly={!isEditable}
-                className="p-2 border border-gray-300 rounded text-black font-[600] w-[20rem]"
+                className="p-2 border border-gray-300 rounded text-black font-[600] w-[75%]"
               />
             </div>
             <div className="col-span-4 flex justify-end gap-2 mt-2">
@@ -294,7 +301,7 @@ function WardenHome() {
               <button className='inline-block font-medium text-center text-white bg-blue-500 border border-transparent rounded py-1 px-2 hover:bg-blue-700' onClick={toggleEdit}>{isEditable ? 'Disable Edit' : 'Edit'}</button>
             </div>
           </div>
-        </div>
+        </div>}
       </div>
     </>
   );

@@ -8,6 +8,7 @@ import { faSort, faSortUp, faSortDown, faTrash } from '@fortawesome/free-solid-s
 import { Dialog, Transition } from '@headlessui/react'; // For modal dialog
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ActivityIndicator from '../components/ActivityIndicator';
 
 function ViewInmates() {
   const [inmates, setInmates] = useState([]);
@@ -213,34 +214,10 @@ function ViewInmates() {
   return (
     <>
       <ToastContainer />
-      <div className="p-6">
+      {loading ? <ActivityIndicator /> : <div className="p-6">
         <h1 className="text-3xl font-bold mb-6">View Inmates</h1>
 
-        {loading ? (
-          <div className="flex items-center justify-center h-64">
-            <svg
-              className="animate-spin h-10 w-10 text-blue-500 mx-auto mb-4"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8v8H4z"
-              ></path>
-            </svg>
-            <span className="text-xl text-gray-700">Loading...</span>
-          </div>
-        ) : (
+         
           <div className="overflow-x-auto">
             {/* Optional: Add a Search Bar Here */}
             {/* <div className="mb-4">
@@ -306,7 +283,7 @@ function ViewInmates() {
               </tbody>
             </table>
           </div>
-        )}
+        
 
         {/* Confirmation Modal */}
         <Transition appear show={isModalOpen} as={Fragment}>
@@ -366,7 +343,7 @@ function ViewInmates() {
             </div>
           </Dialog>
         </Transition>
-      </div>
+      </div>} 
     </>
   );
 }

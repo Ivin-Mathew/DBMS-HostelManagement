@@ -10,13 +10,15 @@ import HostelSearch from './pages/HostelSearch';
 import HostelDetails from './pages/HostelDetails';
 import ViewInmates from './pages/ViewInmates';
 import UserHostelDetails from './pages/UserHostelDetails';
+import SplashScreen from './pages/splashscreen';
 
 function App() {
   return (
     <>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<UserLogin />} />
+        <Route path="/" element={<SplashScreen />} />
+        <Route path="/userLogin" element={<UserLogin />} />
         <Route path="/userHome" element={<UserHome />} />
         <Route path="/search" element={<HostelSearch />} />
         <Route path="/hostelDetails/:hostelid" element={<HostelDetails />} />

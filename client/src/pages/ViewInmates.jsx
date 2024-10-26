@@ -215,7 +215,7 @@ function ViewInmates() {
     <>
       <ToastContainer />
       {loading ? <ActivityIndicator /> : <div className="p-6">
-        <h1 className="text-3xl font-bold mb-6">View Inmates</h1>
+        <h1 className="text-3xl font-bold mb-6 bg-surface">View Inmates</h1>
 
          
           <div className="overflow-x-auto">

@@ -14,25 +14,9 @@ const UserHostelDetails = () => {
   const [warden,setWarden] = useState(null);
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [message, setMessage] = useState(null); // To display success/error messages
+  const [message] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  const images = [
-    { src: "/src/assets/Hostelimage.jpg", alt: "First slide" },
-    { src: "/src/assets/Hostelimage2.jpg", alt: "Second slide" },
-    { src: "/src/assets/Hostelimage3.jpg", alt: "Third slide" },
-  ];
-
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
-  };
 
   const fetchUserDetails = async () => {
     const { data: user, error: userError } = await supabase.auth.getUser();
@@ -181,14 +165,17 @@ const UserHostelDetails = () => {
             </div>
             }            
           </h2>
-          <div
-            className="text-lg hover:text-black font-bold bg-red-600 
-            py-3 px-8 
-            border-[1px] border-slate-300 rounded-xl"
-            onClick={() => navigate("/search")}
-          >
-            {isOpen && "Back"}
-          </div>
+            {isOpen &&
+            <div
+              className="text-lg hover:text-black font-bold bg-red-600 
+              py-3 px-8 
+              border-[1px] border-slate-300 rounded-xl"
+              onClick={() => navigate("/userHome")}
+            >
+              Back
+            </div>
+            }
+          
         </div>
       </div>
 

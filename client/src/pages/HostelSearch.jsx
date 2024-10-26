@@ -232,17 +232,17 @@ const HostelSearch = () => {
                   </li>
                 </ul>
               </div>
+              {isOpen &&
               <div className="mt-6" onClick={() => {
                 navigate('/userHome')
               }}>
                 <div
-                  className="text-lg text-center hover:text-black font-bold bg-red-600 py-3
-                  border-[1px] border-slate-300 rounded-xl"
+                  className="text-lg text-center text-red-500 hover:text-red-600 hover:cursor-pointer font-bold rounded-xl"
                   onClick={() => navigate("/search")}
                 >
-                  {isOpen && "Back"}
-                </div>
-              </div>
+                  Back
+                </div> 
+              </div>}
             </div>
           </>
         )}

@@ -137,7 +137,7 @@ const HostelDetails = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
+      <div className="flex items-center justify-center h-screen bg-surface text-white">
         <ActivityIndicator />
       </div>
     );
@@ -294,57 +294,8 @@ const HostelDetails = () => {
             )}
           </div>
         </div>
-
-        {/* Image Carousel */}
-        {/* <div className="relative w-full max-w-xl mx-auto mt-10">
-          <div className="overflow-hidden rounded-lg shadow-lg">
-            <img
-              src={images[currentIndex].src}
-              alt={images[currentIndex].alt}
-              className="w-full h-64 object-cover duration-200 ease-in-out"
-            />
-          </div> */}
-
-          {/* Navigation Buttons */}
-          {/* <button
-            className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-90 p-3 rounded-r-md shadow-md transition"
-            onClick={prevSlide}
-          >
-            &#10094;
-          </button>
-          <button
-            className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-90 p-3 rounded-l-md shadow-md transition"
-            onClick={nextSlide}
-          >
-            &#10095;
-          </button> */}
-
-          {/* Indicators */}
-          {/* <div className="flex justify-center mt-4 space-x-2">
-            {images.map((_, index) => (
-              <button
-                key={index}
-                className={`h-3 w-3 rounded-full transition-colors duration-300 ${
-                  index === currentIndex ? "bg-gray-800" : "bg-gray-400"
-                }`}
-                onClick={() => setCurrentIndex(index)}
-              ></button>
-            ))}
-          </div>
-        </div>  */}
       </div>
 
-      {/* Back Button */}
-      {/* <div className="mt-8">
-          <Link
-            to="/"
-            className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition"
-          >
-            Back to Search
-          </Link>
-        </div> */}
-
-      {/* Confirmation Modal */}
       {showConfirmModal && selectedRoom && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white rounded-lg p-6 w-80">

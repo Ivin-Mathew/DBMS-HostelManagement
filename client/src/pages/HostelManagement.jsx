@@ -196,7 +196,7 @@ const HostelManagement = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen bg-surface text-white">
         <span className="text-xl">Loading...</span>
       </div>
     );

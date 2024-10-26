@@ -213,8 +213,8 @@ function ViewInmates() {
   return (
     <>
       <ToastContainer />
-      <div className="p-6">
-        <h1 className="text-3xl font-bold mb-6">View Inmates</h1>
+      <div className="p-6 bg-surface text-white min-h-screen">
+        <h1 className="text-3xl text-center font-bold mb-6">View Inmates</h1>
 
         {loading ? (
           <div className="flex items-center justify-center h-64">
@@ -252,7 +252,7 @@ function ViewInmates() {
                 className="w-full p-2 border border-gray-300 rounded"
               />
             </div> */}
-            <table className="min-w-full bg-white border">
+            <table className="min-w-full bg-mixed border">
               <thead>
                 <tr>
                   {['Name', 'Room ID', 'Rent/Person', 'Rent Due Date', 'Email', 'Contact', 'Action'].map((header) => (
@@ -285,7 +285,7 @@ function ViewInmates() {
                   </tr>
                 ) : (
                   sortedInmates.map((inmate) => (
-                    <tr key={inmate.userid} className="hover:bg-gray-100">
+                    <tr key={inmate.userid} className="hover:bg-gray-600">
                       <td className="py-2 px-4 border-b">{inmate.name}</td>
                       <td className="py-2 px-4 border-b">{inmate.roomid}</td>
                       <td className="py-2 px-4 border-b">₹{inmate.rent_per_person}</td>

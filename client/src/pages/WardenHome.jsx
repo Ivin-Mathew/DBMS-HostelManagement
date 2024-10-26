@@ -208,7 +208,7 @@ function WardenHome() {
           </button>
 
         <div className="flex flex-col items-center justify-center p-6 bg-surface text-white w-full min-h-screen">
-          <h1 className="text-center font-black text-4xl mt-16 md:mt-8 md:mb-16 text-white">Welcome WardenName!</h1>
+          <h1 className="text-center font-black text-4xl mt-16 md:mt-8 md:mb-16 text-white">Welcome {inputs.name || "Warden"}!</h1>
 
           <div className="border-2 border-black flex flex-col md:flex-none gap-10 text-left md:grid md:grid-cols-4 md:gap-x-5 md:gap-y-2 items-center w-[85%] p-10 mt-10 rounded-lg shadow-lg bg-mixed">
             <div className="flex flex-col md:flex-row">

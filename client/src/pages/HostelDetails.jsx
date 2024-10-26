@@ -148,7 +148,7 @@ const HostelDetails = () => {
   }
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen ">
       {/* Sidebar */}
       <div
         className="fixed flex flex-col justify-center left-0  bg-gray-600 bg-opacity-50 backdrop-filter backdrop-blur-sm items-center h-screen  top-0 col-span-1 sidebar transition-all duration-300 z-10"
@@ -156,15 +156,15 @@ const HostelDetails = () => {
       >
         {/* <h1 className="font-bold text-2xl mb-6">Home</h1> */}
         <div className="flex flex-col items-center justify-center mt-16 gap-10">
-          <h2 className="text-lg hover:text-white">
+          <h2 className="text-lg text-white hover:cursor-pointer">
             {isOpen && "Warden Name"}
           </h2>
-          <h2 className="text-lg hover:text-white">
+          <h2 className="text-lg text-white hover:cursor-pointer">
             {isOpen && "Contact Number"}
           </h2>
-          <h2 className="text-lg hover:text-white">{isOpen && "Email"}</h2>
+          <h2 className="text-lg text-white hover:cursor-pointer">{isOpen && "Email"}</h2>
           <h2
-            className="text-lg hover:text-white text-red-600"
+            className="text-lg hover:text-white hover:cursor-pointer text-red-600"
             onClick={() => navigate("/search")}
           >
             {isOpen && "Back"}
@@ -173,32 +173,32 @@ const HostelDetails = () => {
       </div>
 
       <button
-        className="fixed top-6 left-6 bg-black p-3 rounded-full w-14 h-14 z-20 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-colors duration-200 flex items-center justify-center"
+        className="fixed top-6 left-6 bg-[#daa510] p-3 rounded-full w-14 h-14 z-20 hover:bg-[#e6b854] focus:outline-none focus:ring-2 focus:ring-gray-300 transition-colors duration-200 flex items-center justify-center"
         onClick={toggleSidebar}
       >
         {isOpen ? (
           <FontAwesomeIcon
             icon={faClose}
-            style={{ color: "white" }}
+            style={{ color: "black" }}
             size="lg"
           />
         ) : (
-          <FontAwesomeIcon icon={faBars} style={{ color: "white" }} size="lg" />
+          <FontAwesomeIcon icon={faBars} style={{ color: "black" }} size="lg" />
         )}
       </button>
 
       {/* Main Content */}
-      <div className="flex flex-col items-center justify-center p-6 bg-gray-50 min-h-screen">
+      <div className="flex flex-col items-center bg-[#353535] justify-center p-6  min-h-screen">
         {/* Hostel Image and Name */}
         <div className="flex flex-col items-center w-full max-w-2xl mx-auto space-y-4">
-          {/* <div className="w-full h-64 overflow-hidden rounded-lg shadow-lg">
+          <div className="w-full h-64 overflow-hidden rounded-lg shadow-lg">
             <img
-              src={hostel.image_url || "https://via.placeholder.com/600x400"}
+              src={`https://cktahfosepepxjmynuuz.supabase.co/storage/v1/object/public/thumbnails/${hostel.name}/${hostel.thumbnail}` || "https://via.placeholder.com/600x400"}
               alt="Hostel"
               className="w-full h-full object-cover"
             />
-          </div> */}
-          <h2 className="text-4xl font-bold text-gray-800 text-center">
+          </div>
+          <h2 className="text-4xl font-bold text-white text-center">
             {hostel.name}
           </h2>
         </div>
@@ -228,7 +228,7 @@ const HostelDetails = () => {
 
         {/* Available Rooms */}
         <div className="mt-8 w-full max-w-2xl mx-auto">
-          <h3 className="text-2xl font-semibold mb-6">Available Rooms</h3>
+          <h3 className="text-2xl font-semibold mb-6 text-white">Available Rooms</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {rooms.length === 0 ? (
               <p className="text-gray-500 col-span-full text-center">
@@ -270,17 +270,17 @@ const HostelDetails = () => {
         </div>
 
         {/* Image Carousel */}
-        <div className="relative w-full max-w-xl mx-auto mt-10">
+        {/* <div className="relative w-full max-w-xl mx-auto mt-10">
           <div className="overflow-hidden rounded-lg shadow-lg">
             <img
               src={images[currentIndex].src}
               alt={images[currentIndex].alt}
               className="w-full h-64 object-cover duration-200 ease-in-out"
             />
-          </div>
+          </div> */}
 
           {/* Navigation Buttons */}
-          <button
+          {/* <button
             className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-90 p-3 rounded-r-md shadow-md transition"
             onClick={prevSlide}
           >
@@ -291,10 +291,10 @@ const HostelDetails = () => {
             onClick={nextSlide}
           >
             &#10095;
-          </button>
+          </button> */}
 
           {/* Indicators */}
-          <div className="flex justify-center mt-4 space-x-2">
+          {/* <div className="flex justify-center mt-4 space-x-2">
             {images.map((_, index) => (
               <button
                 key={index}
@@ -305,7 +305,7 @@ const HostelDetails = () => {
               ></button>
             ))}
           </div>
-        </div>
+        </div>  */}
       </div>
 
       {/* Back Button */}

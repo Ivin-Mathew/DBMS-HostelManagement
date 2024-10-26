@@ -1,7 +1,7 @@
 // HostelManagement.jsx
-import { useState, useEffect } from 'react';
-import { supabase } from '../Supabase'; // Ensure correct path
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { supabase } from "../Supabase"; // Ensure correct path
+import { useNavigate, useParams, Link } from "react-router-dom";
 
 const HostelManagement = () => {
   const { wardenID } = useParams();
@@ -10,31 +10,34 @@ const HostelManagement = () => {
   const [hostel, setHostel] = useState(null);
   const [rooms, setRooms] = useState([]);
   const [formData, setFormData] = useState({
-    name: '',
-    address: '',
+    name: "",
+    address: "",
     mess_available: false,
-    gender: '',
-    occupanttype: '',
-    id: '',
+    gender: "",
+    thumbnail: "",
+    occupanttype: "",
+    id: "",
   });
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [thumbnail, setThumbnail] = useState("");
 
   // Fetch Hostel Details
   const fetchHostel = async () => {
     if (!wardenID) return;
 
     const { data, error } = await supabase
-      .from('hostels')
-      .select('*')
-      .eq('wardenid', wardenID)
+      .from("hostels")
+      .select("*")
+      .eq("wardenid", wardenID)
       .single();
-    
+
     console.log("Hostel data:", data);
 
-    if (error && error.code !== 'PGRST116') { // PGRST116: No rows found
-      console.error('Error fetching hostel:', error);
-      alert('Error fetching hostel data.');
+    if (error && error.code !== "PGRST116") {
+      // PGRST116: No rows found
+      console.error("Error fetching hostel:", error);
+      alert("Error fetching hostel data.");
     } else if (data) {
       setHostel(data);
       setFormData({
@@ -42,6 +45,7 @@ const HostelManagement = () => {
         address: data.address,
         mess_available: data.mess_available,
         gender: data.gender,
+        thumbnail: data.thumbnail,
         occupanttype: data.occupanttype,
         id: data.hostelid,
       });
@@ -55,15 +59,15 @@ const HostelManagement = () => {
     if (!hostel) return;
 
     const { data, error } = await supabase
-      .from('hostelroomdetails')
-      .select('*')
-      .eq('hostelid', hostel.hostelid);
+      .from("hostelroomdetails")
+      .select("*")
+      .eq("hostelid", hostel.hostelid);
 
     console.log("Rooms data:", data);
 
     if (error) {
-      console.error('Error fetching rooms:', error);
-      alert('Error fetching room data.');
+      console.error("Error fetching rooms:", error);
+      alert("Error fetching room data.");
     } else {
       setRooms(data);
     }
@@ -90,11 +94,21 @@ const HostelManagement = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prevData => ({
-      ...prevData,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
+    const { name, value, type, checked, files } = e.target;
+    if (type === "file" && files.length > 0) {
+      setThumbnail(URL.createObjectURL(files[0])); // Create a URL for the thumbnail
+      setFormData((prevData) => ({
+        ...prevData,
+        thumbnail: files[0], // Store the file object for upload
+      }));
+
+      console.log(formData);
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: type === "checkbox" ? checked : value,
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -103,53 +117,79 @@ const HostelManagement = () => {
     // Validate required fields
     const { name, address, gender, occupanttype } = formData;
     if (!name || !address || !gender || !occupanttype) {
-      alert('Please fill in all required fields.');
+      alert("Please fill in all required fields.");
       return;
+    }
+
+    let thumbnailUrl = "";
+
+    if (formData.thumbnail) {
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("thumbnails")
+        .upload(`${formData.name}/${formData.thumbnail.name}`, formData.thumbnail);
+
+      if (uploadError) {
+        console.error("Error uploading thumbnail:", uploadError);
+        alert("Failed to upload thumbnail: " + uploadError.message);
+        return;
+      } else {
+        console.log("Thumbnail uploaded successfully:", uploadData);
+      }
+
+      // Get the public URL for the uploaded image
+      thumbnailUrl = supabase.storage
+        .from("thumbnails")
+        .getPublicUrl(uploadData.path).publicURL;
+
+        console.log(thumbnailUrl)
+
+      setThumbnail(thumbnailUrl)
     }
 
     if (isEditing) {
       // Update existing hostel details
       const { data, error } = await supabase
-        .from('hostels')
+        .from("hostels")
         .update({
           name: formData.name,
           address: formData.address,
           mess_available: formData.mess_available,
           gender: formData.gender,
+          thumbnail: formData.thumbnail.name,
           occupanttype: formData.occupanttype,
         })
-        .eq('wardenid', wardenID);
+        .eq("wardenid", wardenID);
 
       if (error) {
-        console.error('Error updating hostel:', error);
-        alert('Failed to update hostel: ' + error.message);
+        console.error("Error updating hostel:", error);
+        alert("Failed to update hostel: " + error.message);
       } else {
-        console.log('Hostel updated:', data);
-        alert('Hostel updated successfully!');
-        navigate('/wardenHome'); // Redirect to warden dashboard or home
+        console.log("Hostel updated:", data);
+        alert("Hostel updated successfully!");
+        navigate("/wardenHome"); // Redirect to warden dashboard or home
       }
     } else {
       // Create a new hostel
-      const { data, error } = await supabase
-        .from('hostels')
-        .insert([
-          {
-            name: formData.name,
-            address: formData.address,
-            mess_available: formData.mess_available,
-            gender: formData.gender,
-            occupanttype: formData.occupanttype,
-            wardenid: wardenID,
-          },
-        ]);
+      const { data, error } = await supabase.from("hostels").insert([
+        {
+          name: formData.name,
+          address: formData.address,
+          mess_available: formData.mess_available,
+          gender: formData.gender,
+          thumbnail: formData.thumbnail.name,
+          max_occupants: 10,
+          occupanttype: formData.occupanttype,
+          wardenid: wardenID,
+        },
+      ]);
 
       if (error) {
-        console.error('Error creating hostel:', error);
-        alert('Failed to create hostel: ' + error.message);
+        console.error("Error creating hostel:", error);
+        alert("Failed to create hostel: " + error.message);
       } else {
-        console.log('Hostel created:', data);
-        alert('Hostel created successfully!');
-        navigate('/wardenHome'); // Redirect to warden dashboard or home
+        console.log("Hostel created:", data);
+        alert("Hostel created successfully!");
+        navigate("/wardenHome"); // Redirect to warden dashboard or home
       }
     }
   };
@@ -167,12 +207,15 @@ const HostelManagement = () => {
       {/* Hostel Details Section */}
       <div className="bg-white p-8 rounded-lg shadow-lg w-full md:w-1/2">
         <h2 className="text-2xl font-bold text-center mb-6">
-          {isEditing ? 'Edit Hostel Details' : 'Create New Hostel'}
+          {isEditing ? "Edit Hostel Details" : "Create New Hostel"}
         </h2>
         <form onSubmit={handleSubmit}>
           {/* Name */}
           <div className="mb-4">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700"
+            >
               Hostel Name
             </label>
             <input
@@ -188,7 +231,10 @@ const HostelManagement = () => {
 
           {/* Address */}
           <div className="mb-4">
-            <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="address"
+              className="block text-sm font-medium text-gray-700"
+            >
               Address
             </label>
             <textarea
@@ -212,14 +258,20 @@ const HostelManagement = () => {
               onChange={handleChange}
               className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
             />
-            <label htmlFor="mess_available" className="ml-2 block text-sm text-gray-700">
+            <label
+              htmlFor="mess_available"
+              className="ml-2 block text-sm text-gray-700"
+            >
               Mess Available
             </label>
           </div>
 
           {/* Gender */}
           <div className="mb-4">
-            <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="gender"
+              className="block text-sm font-medium text-gray-700"
+            >
               Gender
             </label>
             <select
@@ -239,7 +291,10 @@ const HostelManagement = () => {
 
           {/* Occupant Type */}
           <div className="mb-4">
-            <label htmlFor="occupanttype" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="occupanttype"
+              className="block text-sm font-medium text-gray-700"
+            >
               Occupant Type
             </label>
             <select
@@ -257,13 +312,32 @@ const HostelManagement = () => {
             </select>
           </div>
 
+          {/* Upload Thumbnail */}
+          <div className="mb-4">
+            <label
+              htmlFor="thumbnail"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Thumbnail
+            </label>
+            <input
+              type="file"
+              id="thumbnail"
+              name="thumbnail"
+              accept="image/*" // This restricts the file input to image files
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
           {/* Submit Button */}
           <div className="mt-6">
             <button
               type="submit"
               className="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition duration-200"
             >
-              {isEditing ? 'Update Hostel' : 'Create Hostel'}
+              {isEditing ? "Update Hostel" : "Create Hostel"}
             </button>
           </div>
         </form>
@@ -307,23 +381,31 @@ const HostelManagement = () => {
                   </td>
                 </tr>
               ) : (
-                rooms.map(room => (
+                rooms.map((room) => (
                   <tr key={room.roomid}>
-                    <td className="py-2 px-4 border-b text-center">{room.roomType}</td>
-                    <td className="py-2 px-4 border-b text-center">{room.maxoccupants}</td>
-                    <td className="py-2 px-4 border-b text-center">{room.vacancies}</td>
-                    <td className="py-2 px-4 border-b text-center">₹{room.rentperperson}</td>
+                    <td className="py-2 px-4 border-b text-center">
+                      {room.roomType}
+                    </td>
+                    <td className="py-2 px-4 border-b text-center">
+                      {room.maxoccupants}
+                    </td>
+                    <td className="py-2 px-4 border-b text-center">
+                      {room.vacancies}
+                    </td>
+                    <td className="py-2 px-4 border-b text-center">
+                      ₹{room.rentperperson}
+                    </td>
                     <td className="py-2 px-4 border-b text-center">
                       {new Date(room.rentduedate).toLocaleDateString()}
                     </td>
                     <td className="py-2 px-4 border-b text-center">
-                      {room.attachedbathroom ? 'Yes' : 'No'}
+                      {room.attachedbathroom ? "Yes" : "No"}
                     </td>
                     <td className="py-2 px-4 border-b text-center">
-                      {room.furnitureavailable ? 'Yes' : 'No'}
+                      {room.furnitureavailable ? "Yes" : "No"}
                     </td>
                     <td className="py-2 px-4 border-b text-center">
-                      {room.acavailable ? 'Yes' : 'No'}
+                      {room.acavailable ? "Yes" : "No"}
                     </td>
                     <td className="py-2 px-4 border-b text-center">
                       <Link

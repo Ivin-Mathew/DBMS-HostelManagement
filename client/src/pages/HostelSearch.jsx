@@ -19,6 +19,7 @@ const HostelSearch = () => {
   const [selectedGenders, setSelectedGenders] = useState([]); // Gender filters
   const [messAvailable, setMessAvailable] = useState("All"); // Mess availability filter
   const [isOpen, setIsOpen] = useState(false);
+  const [imageSrc, setImageSrc] = useState("")
   // Fetch all hostels from Supabase on component mount
   useEffect(() => {
     const fetchHostels = async () => {
@@ -33,6 +34,7 @@ const HostelSearch = () => {
       } else {
         console.log("Fetched hostels:", data); // Debugging line
         setHostels(data);
+        setImageSrc(`https://cktahfosepepxjmynuuz.supabase.co/storage/v1/object/public/thumbnails/${data.name}/${data.thumbnail}`)
         setFilteredHostels(data);
       }
       isLoading(false);
@@ -295,7 +297,7 @@ const HostelSearch = () => {
                     {/* Hostel Image */}
                     <img
                       src={
-                        hostel.image_url || "https://via.placeholder.com/300x200"
+                        `https://cktahfosepepxjmynuuz.supabase.co/storage/v1/object/public/thumbnails/${hostel.name}/${hostel.thumbnail}` || "https://via.placeholder.com/300x200"
                       }
                       alt={hostel.name}
                       className="w-full h-48 object-cover"

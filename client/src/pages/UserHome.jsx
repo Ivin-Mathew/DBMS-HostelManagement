@@ -188,7 +188,7 @@ function UserHome() {
   console.log("Room data: ", room);
   const formattedRentDueDate = room
     ? new Date(room.rentduedate).toLocaleDateString()
-    : "Loading...";
+    : "Details unavailable";
 
   return (
     <>
@@ -285,7 +285,7 @@ function UserHome() {
                   id="hostelName"
                   name="hostelName"
                   placeholder="Hostel Name"
-                  value={hostel ? hostel.name : "Loading..."}
+                  value={hostel ? hostel.name : "Details unavailable"}
                   readOnly
                   className="p-2 border border-gray-300 rounded w-full text-black"
                 />
@@ -301,7 +301,7 @@ function UserHome() {
                   id="location"
                   name="location"
                   placeholder="Location"
-                  value={hostel ? hostel.address : "Loading..."}
+                  value={hostel ? hostel.address : "Details unavailable"}
                   readOnly
                   className="p-2 border border-gray-300 rounded w-full text-black"
                 />
@@ -317,7 +317,7 @@ function UserHome() {
                   id="rent"
                   name="rent"
                   placeholder="Rent"
-                  value={room ? room.rentperperson : "Loading..."}
+                  value={room ? room.rentperperson : "Details unavailable"}
                   readOnly
                   className="p-2 border border-gray-300 rounded w-full text-black"
                 />

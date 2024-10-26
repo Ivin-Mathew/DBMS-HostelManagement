@@ -2,24 +2,20 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "../Supabase"; // Ensure correct path
-import { useParams, Link, useNavigate } from "react-router-dom";
-import { applyToRoom } from "../components/ApplyRoom"; // Import the applyToRoom function
+import { useNavigate } from "react-router-dom";
 import ActivityIndicator from "../components/ActivityIndicator";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faClose } from "@fortawesome/free-solid-svg-icons";
 import { gsap } from "gsap";
 
 const UserHostelDetails = () => {
-  const { hostelid } = useParams();
   const navigate = useNavigate(); // For redirection
   const [hostel, setHostel] = useState(null);
-  const [rooms, setRooms] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [warden,setWarden] = useState(null);
+  const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [message, setMessage] = useState(null); // To display success/error messages
-  const [showConfirmModal, setShowConfirmModal] = useState(false); // To control confirmation modal
-  const [selectedRoom, setSelectedRoom] = useState(null); // To store the room being applied to
-  const [isApplying, setIsApplying] = useState(false); // To show loading overlay during application
   const [isOpen, setIsOpen] = useState(false);
 
   const images = [
@@ -38,81 +34,92 @@ const UserHostelDetails = () => {
     );
   };
 
-  const fetchUserHostelDetails = async () => {
+  const fetchUserDetails = async () => {
+    const { data: user, error: userError } = await supabase.auth.getUser();
+
+    if (userError) {
+      console.error("Error fetching user:", userError);
+      alert("Error fetching user information.");
+      setLoading(false);
+      return;
+    }
+
+    if (!user) {
+      alert("You must be logged in to access this page.");
+      navigate("/login"); // Redirect to login if not authenticated
+      setLoading(false);
+      return;
+    }
+    const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("id", user.user.id)
+    .single(); // Fetch the user details
+
+  if (error) {
+    console.error("Error fetching user details:", error);
+    alert("Failed to fetch user details.");
+    setLoading(false);
+  } else {
+    fetchHostelDetails(data.hostelid);
+    fetchRoomDetails(data.roomid);
+  }
+  };
+
+  const fetchHostelDetails = async (hostelId) => {
     const { data, error } = await supabase
       .from("hostels")
       .select("*")
-      .eq("hostelid", hostelid)
+      .eq("hostelid", hostelId)
       .single();
 
     if (error) {
       console.error("Error fetching hostel details:", error);
       alert("Failed to fetch hostel details.");
-      setLoading(false);
     } else {
       setHostel(data);
-      fetchRooms(data.hostelid);
-    }
-  };
-
-  const fetchRooms = async (hostelId) => {
-    const { data, error } = await supabase
-      .from("hostelroomdetails")
-      .select("*")
-      .eq("hostelid", hostelId);
-
-    if (error) {
-      console.error("Error fetching rooms:", error);
-      alert("Failed to fetch rooms.");
-    } else {
-      setRooms(data);
+      fetchWardenDetails(data.wardenid);
     }
     setLoading(false);
   };
 
-  useEffect(() => {
-    if (hostelid) {
-      fetchUserHostelDetails();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hostelid]);
+  const fetchRoomDetails = async (roomId) => {
+    const { data, error } = await supabase
+      .from("hostelroomdetails")
+      .select("*")
+      .eq("roomid", roomId)
+      .single();
 
-  // Function to handle applying to a room after confirmation
-  const confirmApplyToRoom = async () => {
-    if (!selectedRoom) return;
-
-    setShowConfirmModal(false);
-    setIsApplying(true);
-    setMessage(null); // Reset any existing messages
-
-    // Call the applyToRoom function from applyRoom.js
-    const result = await applyToRoom({
-      hostelId: hostel.hostelid,
-      roomId: selectedRoom.roomid,
-    });
-
-    if (result.success) {
-      // Update the local state to reflect the changes
-      setRooms((prevRooms) =>
-        prevRooms.map((r) =>
-          r.roomid === selectedRoom.roomid
-            ? { ...r, vacancies: r.vacancies - 1 }
-            : r
-        )
-      );
-
-      setMessage({ type: "success", text: result.message });
-
-      // Redirect to /userHome after a short delay to show the success message
-      setTimeout(() => {
-        navigate("/userHome");
-      }, 2000); // 2 seconds delay
+    if (error) {
+      console.error("Error fetching room details:", error);
+      alert("Failed to fetch room details.");
     } else {
-      setMessage({ type: "error", text: result.message });
+      setRoom(data);
     }
-
-    setIsApplying(false); // Reset the applying state
+    setLoading(false);
   };
+
+  const fetchWardenDetails = async (wardenId) =>{
+    const{data,error} = await supabase
+    .from("wardens")
+    .select("*")
+    .eq("wardenid",wardenId)
+    .single();
+
+    if (error) {
+      console.error("Error fetching room details:", error);
+      alert("Failed to fetch room details.");
+    } else {
+      setWarden(data);
+    }
+    setLoading(false);
+
+  }
+
+  useEffect(() => {
+    fetchUserDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggleSidebar = () => {
     const sidebar = document.querySelector(".sidebar");
@@ -123,7 +130,6 @@ const UserHostelDetails = () => {
     }
     setIsOpen(!isOpen);
   };
-
 
   if (loading) {
     return (
@@ -142,21 +148,25 @@ const UserHostelDetails = () => {
   }
 
   return (
-    <div className="relative min-h-screen">
+    <div className="flex flex-row h-[100dvh]">
       {/* Sidebar */}
       <div
-        className="fixed flex flex-col justify-center left-0  bg-gray-600 bg-opacity-50 backdrop-filter backdrop-blur-sm items-center h-screen  top-0 col-span-1 sidebar transition-all duration-300 z-10"
-        style={{ width: "0px" }}
+        className="flex flex-col 
+        bg-[#353535] text-white backdrop-filter backdrop-blur-sm 
+        items-center justify-center h-screen 
+        sticky top-0 left-0  sidebar 
+        transition-all duration-300"
       >
-        {/* <h1 className="font-bold text-2xl mb-6">Home</h1> */}
-        <div className="flex flex-col items-center justify-center mt-16 gap-10">
+        <div className="flex flex-col items-center justify-center px-[12px] gap-10">
           <h2 className="text-lg hover:text-white">
-            {isOpen && "Warden Name"}
+            {isOpen && `Warden Name : ${warden.name}`}
           </h2>
           <h2 className="text-lg hover:text-white">
-            {isOpen && "Contact Number"}
+            {isOpen && `Warden Contact : ${warden.contact}`}
           </h2>
-          <h2 className="text-lg hover:text-white">{isOpen && "Email"}</h2>
+          <h2 className="text-lg hover:text-white">
+          {isOpen && `Warden Email : ${warden.email}`}
+            </h2>
           <h2
             className="text-lg hover:text-white text-red-600"
             onClick={() => navigate("/search")}
@@ -167,31 +177,24 @@ const UserHostelDetails = () => {
       </div>
 
       <button
-        className="fixed top-6 left-6 bg-black p-3 rounded-full w-14 h-14 z-20 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-colors duration-200 flex items-center justify-center"
+        className="fixed top-6 left-6 bg-[#daa510] p-3 rounded-full w-14 h-14 z-20 hover:bg-[#e6b854] focus:outline-none focus:ring-2 focus:ring-gray-300 transition-colors duration-200 flex items-center justify-center"
         onClick={toggleSidebar}
       >
         {isOpen ? (
           <FontAwesomeIcon
             icon={faClose}
-            style={{ color: "white" }}
+            style={{ color: "black" }}
             size="lg"
           />
         ) : (
-          <FontAwesomeIcon icon={faBars} style={{ color: "white" }} size="lg" />
+          <FontAwesomeIcon icon={faBars} style={{ color: "black" }} size="lg" />
         )}
       </button>
 
       {/* Main Content */}
-      <div className="flex flex-col items-center justify-center p-6 bg-gray-50 min-h-screen">
+      <div className="flex flex-col items-center justify-center p-6 bg-gray-50 min-h-screen w-full">
         {/* Hostel Image and Name */}
         <div className="flex flex-col items-center w-full max-w-2xl mx-auto space-y-4">
-          {/* <div className="w-full h-64 overflow-hidden rounded-lg shadow-lg">
-            <img
-              src={hostel.image_url || "https://via.placeholder.com/600x400"}
-              alt="Hostel"
-              className="w-full h-full object-cover"
-            />
-          </div> */}
           <h2 className="text-4xl font-bold text-gray-800 text-center">
             {hostel.name}
           </h2>
@@ -257,73 +260,26 @@ const UserHostelDetails = () => {
             ))}
           </div>
         </div>
-      </div>
 
-      {/* Back Button */}
-      {/* <div className="mt-8">
-          <Link
-            to="/"
-            className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition"
-          >
-            Back to Search
-          </Link>
-        </div> */}
-
-      {/* Confirmation Modal */}
-      {showConfirmModal && selectedRoom && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg p-6 w-80">
-            <h2 className="text-xl font-semibold mb-4">Confirm Application</h2>
-            <p className="mb-6">
-              Are you sure you want to enroll into the "{selectedRoom.roomType}"
-              room?
+        {/* Room Details */}
+        {room && (
+          <div className="mt-8 w-full max-w-2xl mx-auto">
+            <h3 className="text-2xl font-semibold mb-4">Room Details</h3>
+            <p className="text-lg text-gray-700">
+              <strong>Room Type:</strong> {room.roomType}
             </p>
-            <div className="flex justify-end gap-4">
-              <button
-                onClick={() => setShowConfirmModal(false)}
-                className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition"
-              >
-                No
-              </button>
-              <button
-                onClick={confirmApplyToRoom}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-              >
-                Yes
-              </button>
-            </div>
+            <p className="text-lg text-gray-700">
+              <strong>Vacancies:</strong> {room.vacancies}
+            </p>
+            <p className="text-lg text-gray-700">
+              <strong>Rent Due Date:</strong> {new Date(room.rentduedate).toLocaleDateString()}
+            </p>
+            <p className="text-lg text-gray-700">
+              <strong>Rent:</strong> ₹{room.rent}
+            </p>
           </div>
-        </div>
-      )}
-
-      {/* Loading Overlay */}
-      {isApplying && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg p-6 flex flex-col items-center">
-            <svg
-              className="animate-spin h-8 w-8 text-blue-500 mb-4"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8v8H4z"
-              ></path>
-            </svg>
-            <span className="text-xl">Applying...</span>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

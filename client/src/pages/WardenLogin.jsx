@@ -18,6 +18,7 @@ const WardenLogin = () => {
   });
 
   const [isLogin, setIsLogin] = useState(true);
+  
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -39,7 +40,6 @@ const WardenLogin = () => {
             alert('Error logging in: Incorrect credentials or other error.');
         } else {
             console.log('Logged in successfully');
-            alert('Logged in successfully!');
             navigate("/wardenHome");
         }
     } else {

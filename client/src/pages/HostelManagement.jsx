@@ -203,9 +203,9 @@ const HostelManagement = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row items-start justify-center bg-gray-100 p-4 space-y-4 md:space-y-0 md:space-x-4">
+    <div className="min-h-screen flex flex-col md:flex-row items-start justify-center bg-surface text-white p-4 space-y-4 md:space-y-0 md:space-x-4">
       {/* Hostel Details Section */}
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full md:w-1/2">
+      <div className="bg-mixed p-8 rounded-lg shadow-lg w-full md:w-1/2">
         <h2 className="text-2xl font-bold text-center mb-6">
           {isEditing ? "Edit Hostel Details" : "Create New Hostel"}
         </h2>
@@ -214,7 +214,7 @@ const HostelManagement = () => {
           <div className="mb-4">
             <label
               htmlFor="name"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium "
             >
               Hostel Name
             </label>
@@ -225,7 +225,7 @@ const HostelManagement = () => {
               value={formData.name}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full bg-[#444948] px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
@@ -233,7 +233,7 @@ const HostelManagement = () => {
           <div className="mb-4">
             <label
               htmlFor="address"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium "
             >
               Address
             </label>
@@ -244,7 +244,7 @@ const HostelManagement = () => {
               onChange={handleChange}
               required
               rows="3"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full bg-[#444948] px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             ></textarea>
           </div>
 
@@ -260,7 +260,7 @@ const HostelManagement = () => {
             />
             <label
               htmlFor="mess_available"
-              className="ml-2 block text-sm text-gray-700"
+              className="ml-2 block text-sm "
             >
               Mess Available
             </label>
@@ -270,7 +270,7 @@ const HostelManagement = () => {
           <div className="mb-4">
             <label
               htmlFor="gender"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium "
             >
               Gender
             </label>
@@ -280,7 +280,7 @@ const HostelManagement = () => {
               value={formData.gender}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full bg-[#444948] px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             >
               <option value="">Select Gender</option>
               <option value="Male">Male</option>
@@ -293,7 +293,7 @@ const HostelManagement = () => {
           <div className="mb-4">
             <label
               htmlFor="occupanttype"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium "
             >
               Occupant Type
             </label>
@@ -303,7 +303,7 @@ const HostelManagement = () => {
               value={formData.occupanttype}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full bg-[#444948] px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             >
               <option value="">Select Occupant Type</option>
               <option value="Student">Student</option>
@@ -316,7 +316,7 @@ const HostelManagement = () => {
           <div className="mb-4">
             <label
               htmlFor="thumbnail"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium "
             >
               Thumbnail
             </label>
@@ -327,7 +327,7 @@ const HostelManagement = () => {
               accept="image/*" // This restricts the file input to image files
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full bg-[#444948] px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
@@ -344,7 +344,7 @@ const HostelManagement = () => {
       </div>
 
       {/* Room Management Section */}
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full md:w-1/2">
+      <div className="bg-mixed p-8 rounded-lg shadow-lg w-full md:w-1/2">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">Room Management</h2>
           {isEditing && hostel && (
@@ -359,10 +359,10 @@ const HostelManagement = () => {
 
         {/* Rooms List */}
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white">
+          <table className="min-w-full bg-[#2d322c]">
             <thead>
               <tr>
-                <th className="py-2 px-4 border-b">Room Type</th>
+                <th className="py-2 px-4 border-b">S.No.</th>
                 <th className="py-2 px-4 border-b">Max Occupants</th>
                 <th className="py-2 px-4 border-b">Vacancies</th>
                 <th className="py-2 px-4 border-b">Rent/Person</th>
@@ -381,10 +381,10 @@ const HostelManagement = () => {
                   </td>
                 </tr>
               ) : (
-                rooms.map((room) => (
+                rooms.map((room,index) => (
                   <tr key={room.roomid}>
-                    <td className="py-2 px-4 border-b text-center">
-                      {room.roomType}
+                    <td className="py-2 px-4 border-b text-center font-serif text-xl">
+                      {index+1}
                     </td>
                     <td className="py-2 px-4 border-b text-center">
                       {room.maxoccupants}

@@ -214,8 +214,9 @@ function ViewInmates() {
   return (
     <>
       <ToastContainer />
-      {loading ? <ActivityIndicator /> : <div className="p-6">
-        <h1 className="text-3xl font-bold mb-6">View Inmates</h1>
+      {loading? <ActivityIndicator /> :
+      <div className="p-6 bg-surface text-white min-h-screen">
+        <h1 className="text-3xl text-center font-bold mb-6">View Inmates</h1>
 
          
           <div className="overflow-x-auto">
@@ -343,7 +344,7 @@ function ViewInmates() {
             </div>
           </Dialog>
         </Transition>
-      </div>} 
+      </div>}
     </>
   );
 }

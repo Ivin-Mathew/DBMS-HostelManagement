@@ -153,7 +153,7 @@ const UserHostelDetails = () => {
       <div
         className="flex flex-col 
         bg-[#353535] text-white backdrop-filter backdrop-blur-sm 
-        items-center justify-center h-screen 
+        items-center justify-center text-center h-screen 
         sticky top-0 left-0  sidebar 
         transition-all duration-300"
       >

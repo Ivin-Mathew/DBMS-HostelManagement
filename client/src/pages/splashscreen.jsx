@@ -32,8 +32,8 @@ const HostigoAnimation = () => {
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
           transition={{
-            duration: 5 / letterPaths.length,
-            delay: (index * 5) / letterPaths.length,
+            duration: 10 / letterPaths.length,
+            delay: (index * 10) / letterPaths.length,
           }}
         />
       ))}
